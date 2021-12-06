@@ -1,57 +1,69 @@
 #include<array>
 #include<vector>
+#include<stack>
+#include<unordered_map>
 #include<unordered_set>
 #include<iostream>
 using namespace std;
 
-typedef struct BiTNode{
-	int data;
-	struct BiTNode *lchild,*rchild;
-}BiTNode, *BiTree;
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
 
 class Solution {
 public:
-    BiTree PreInCreat(int A[], int B[], int l1, int h1, int l2, int h2) {
-        BiTree root= (BiTNode*) malloc (sizeof (BiTNode) ) ;
-        root->data=A[l1];
-        int i = 0;
-        for (i = l2; B [i] != root->data; i++);
-        //子树长度
-        int llen = i - l2;
-        int rlen = h2 - i;
-        if (llen)
-            root->lchild = PreInCreat(A, B, l1+1, l1+llen, l2, l2+llen-1);
-        else
-            root->lchild = nullptr;
-
-        if (rlen)
-            root->rchild = PreInCreat(A, B, h1-rlen+1, h1, h2-rlen+1, h2);
-        else
-            root->rchild = nullptr;
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        if (!preorder.size()) {
+            return nullptr;
+        }
+        TreeNode* root = new TreeNode(preorder[0]);
+        stack<TreeNode*> stk;
+        stk.push(root);
+        int inorderIndex = 0;
+        for (int i = 1; i < preorder.size(); ++i) {
+            int preorderVal = preorder[i];
+            TreeNode* node = stk.top();
+            if (node->val != inorder[inorderIndex]) {
+                node->left = new TreeNode(preorderVal);
+                stk.push(node->left);
+            }
+            else {
+                while (!stk.empty() && stk.top()->val == inorder[inorderIndex]) {
+                    node = stk.top();
+                    stk.pop();
+                    ++inorderIndex;
+                }
+                node->right = new TreeNode(preorderVal);
+                stk.push(node->right);
+            }
+        }
         return root;
     }
-    vector<BiTNode*> deiNodes(BiTNode* root, vector<int>& to_delete) {
-        vector<BiTNode*> forest;
+    vector<TreeNode*> deiNodes(TreeNode* root, vector<int>& to_delete) {
+        vector<TreeNode*> forest;
         unordered_set<int> diet(to_delete.begin(), to_delete.end());
         root = helper(root, diet, forest);
         if (root) {
-        forest.push_back(root);
+            forest.push_back(root);
         }
         return forest;
     }
 
-    BiTNode* helper(BiTNode* root, unordered_set<int> & diet, vector<BiTNode*> &forest) {
+    TreeNode* helper(TreeNode* root, unordered_set<int> & diet, vector<TreeNode*> &forest) {
         if (!root) {
             return root;
         }
-        root->lchild = helper(root->lchild, diet, forest);
-        root->rchild = helper(root->rchild, diet, forest);
-        if(diet.count(root->data)) {
-            if (root->lchild) {
-                forest.push_back(root->lchild);
+        root->left = helper(root->left, diet, forest);
+        root->right = helper(root->right, diet, forest);
+        if(diet.count(root->val)) {
+            if (root->left) {
+                forest.push_back(root->left);
             }
-            if (root->rchild) {
-                forest.push_back(root->rchild);
+            if (root->right) {
+                forest.push_back(root->right);
             }
             root = nullptr;
         }
@@ -59,20 +71,20 @@ public:
     }
 };
 int main(){
-    int n1 = 0, n2 = 0, t = 0, target = 0;
-    cout << "number of num1: ";
+    int n1 = 0, n2 = 0, t = 0, target;
+    cout << "number of nodes: ";
     cin >> n1;
-    int nums1[n1+1];
+    cout << "preorder: ";
+    vector<int> nums1;
     for (int i = 1; i <= n1; i++){
         cin >> t;
-        nums1[i] = t;
+        nums1.push_back(t);
     }
-    cout << "number of num2: ";
-    cin >> n2;
-    int nums2[n2+1];
-    for (int i = 1; i <= n2; i++){
+    cout << "inorder: ";
+    vector<int> nums2;
+    for (int i = 1; i <= n1; i++){
         cin >> t;
-        nums2[i] = t;
+        nums2.push_back(t);
     }
     cout << "number of dels: ";
     cin >> target;
@@ -82,10 +94,19 @@ int main(){
         del.push_back(t);
     }
     Solution sol;
-    BiTree bt = sol.PreInCreat(nums1, nums2, 1, n1, 1, n2);
+    TreeNode* bt = sol.buildTree(nums1, nums2);
     sol.deiNodes(bt, del);
     return 0;
 }
+/*给出二叉树的根节点 root，树上每个节点都有一个不同的值。
+
+如果节点值在 to_delete 中出现，我们就把该节点从树上删去，最后得到一个森林（一些不相交的树构成的集合）。
+
+返回森林中的每棵树。你可以按任意顺序组织答案。
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/delete-nodes-and-return-forest
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。*/
 // number of num1: 7
 // 1 2 4 5 3 6 7
 // number of num2: 7

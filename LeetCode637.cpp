@@ -1,38 +1,50 @@
 #include<array>
 #include<vector>
+#include<stack>
+#include<unordered_map>
 #include<queue>
 #include<iostream>
 using namespace std;
 
-typedef struct BiTNode{
-	int data;
-	struct BiTNode *lchild,*rchild;
-}BiTNode, *BiTree;
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
 
 class Solution {
 public:
-    BiTree PreInCreat(int A[], int B[], int l1, int h1, int l2, int h2) {
-        BiTree root= (BiTNode*) malloc (sizeof (BiTNode) ) ;
-        root->data=A[l1];
-        int i = 0;
-        for (i = l2; B [i] != root->data; i++);
-        //子树长度
-        int llen = i - l2;
-        int rlen = h2 - i;
-        if (llen)
-            root->lchild = PreInCreat(A, B, l1+1, l1+llen, l2, l2+llen-1);
-        else
-            root->lchild = nullptr;
-
-        if (rlen)
-            root->rchild = PreInCreat(A, B, h1-rlen+1, h1, h2-rlen+1, h2);
-        else
-            root->rchild = nullptr;
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        if (!preorder.size()) {
+            return nullptr;
+        }
+        TreeNode* root = new TreeNode(preorder[0]);
+        stack<TreeNode*> stk;
+        stk.push(root);
+        int inorderIndex = 0;
+        for (int i = 1; i < preorder.size(); ++i) {
+            int preorderVal = preorder[i];
+            TreeNode* node = stk.top();
+            if (node->val != inorder[inorderIndex]) {
+                node->left = new TreeNode(preorderVal);
+                stk.push(node->left);
+            }
+            else {
+                while (!stk.empty() && stk.top()->val == inorder[inorderIndex]) {
+                    node = stk.top();
+                    stk.pop();
+                    ++inorderIndex;
+                }
+                node->right = new TreeNode(preorderVal);
+                stk.push(node->right);
+            }
+        }
         return root;
     }
-    vector<double> averageOfLevels(BiTNode* root) {
+    vector<double> averageOfLevels(TreeNode* root) {
         auto averages = vector<double>();
-        auto q = queue<BiTNode*>();
+        auto q = queue<TreeNode*>();
         q.push(root);
         while (!q.empty()) {
             double sum = 0;
@@ -40,8 +52,8 @@ public:
             for (int i = 0; i < size; i++) {
                 auto node = q.front();
                 q.pop();
-                sum += node->data;
-                auto left = node->lchild, right = node->rchild;
+                sum += node->val;
+                auto left = node->left, right = node->right;
                 if (left != nullptr) {
                     q.push(left);
                 }
@@ -55,23 +67,23 @@ public:
     }
 };
 int main(){
-    int n1 = 0, n2 = 0, t = 0, target = 0;
-    cout << "number of num1: ";
+    int n1 = 0, n2 = 0, t = 0, target;
+    cout << "number of nodes: ";
     cin >> n1;
-    int nums1[n1+1];
+    cout << "preorder: ";
+    vector<int> nums1;
     for (int i = 1; i <= n1; i++){
         cin >> t;
-        nums1[i] = t;
+        nums1.push_back(t);
     }
-    cout << "number of num2: ";
-    cin >> n2;
-    int nums2[n2+1];
-    for (int i = 1; i <= n2; i++){
+    cout << "inorder: ";
+    vector<int> nums2;
+    for (int i = 1; i <= n1; i++){
         cin >> t;
-        nums2[i] = t;
+        nums2.push_back(t);
     }
     Solution sol;
-    BiTree bt = sol.PreInCreat(nums1, nums2, 1, n1, 1, n2);
+    TreeNode* bt = sol.buildTree(nums1, nums2);
     vector<double> res = sol.averageOfLevels(bt);
     t = res.size();
     cout << "[";
@@ -82,6 +94,7 @@ int main(){
     
     return 0;
 }
+/*给定一个非空二叉树, 返回一个由每层节点平均值组成的数组。*/
 // number of num1: 5
 // 3 9 20 15 7
 // number of num2: 5

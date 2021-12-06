@@ -31,5 +31,6 @@ int main(){
     cout << sol.convertToBase7(n);
     return 0;
 }
+/*Given an integer num, return a string of its base 7 representation.*/
 // n: 100
 // 202

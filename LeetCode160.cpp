@@ -92,9 +92,10 @@ int main(){
     sol.getIntersectionNode(head1, head2);
     return 0;
 }
+/*给你两个单链表的头节点 headA 和 headB ，请你找出并返回两个单链表相交的起始节点。如果两个链表不存在相交节点，返回 null 。*/
 // number of nums1: 4
 // 1 3 5 7
-// number of nums1: 4
+// number of nums2: 4
 // 2 4 6 8
 // number of public: 1
 // 1

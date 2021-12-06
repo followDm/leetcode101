@@ -1,74 +1,83 @@
 #include<array>
+#include<vector>
+#include<stack>
+#include<unordered_map>
 #include<iostream>
 using namespace std;
 
-typedef struct BiTNode{
-	int data;
-	struct BiTNode *lchild,*rchild;
-}BiTNode, *BiTree;
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
 
 class Solution {
+private:
+    unordered_map<int, int> index;
 public:
-    BiTree PreInCreat(int A[], int B[], int l1, int h1, int l2, int h2) {
-        //l1, h1为先序的第一和最后一个结点下标，l2,h2为中序的第一和最后一个结点下标
-        //初始调用时，l1=l2=1, h1=h2=n
-        //建根结点
-        BiTree root= (BiTNode*) malloc (sizeof (BiTNode) ) ;
-        root->data=A[l1];
-        //根结点在中序序列中的划分
-        int i = 0;
-        for (i = l2; B [i] != root->data; i++);
-        //子树长度
-        int llen = i - l2;
-        int rlen = h2 - i;
-        if (llen)
-            root->lchild = PreInCreat(A, B, l1+1, l1+llen, l2, l2+llen-1);
-        else
-            root->lchild = nullptr;
-
-        if (rlen)
-            root->rchild = PreInCreat(A, B, h1-rlen+1, h1, h2-rlen+1, h2);
-        else
-            root->rchild = nullptr;
+    TreeNode* myBuildTree(const vector<int>& preorder, const vector<int>& inorder, int preorder_left, int preorder_right, int inorder_left, int inorder_right) {
+        if (preorder_left > preorder_right) {
+            return nullptr;
+        }
+        int preorder_root = preorder_left;
+        int inorder_root = index[preorder[preorder_root]];
+        
+        TreeNode* root = new TreeNode(preorder[preorder_root]);
+        int size_left_subtree = inorder_root - inorder_left;
+        root->left = myBuildTree(preorder, inorder, preorder_left + 1, preorder_left + size_left_subtree, inorder_left, inorder_root - 1);
+        
+        root->right = myBuildTree(preorder, inorder, preorder_left + size_left_subtree + 1, preorder_right, inorder_root + 1, inorder_right);
         return root;
     }
-    int diameterOfBinaryTree(BiTNode* root) {
+
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        int n = preorder.size();
+        for (int i = 0; i < n; ++i) {
+            index[inorder[i]] = i;
+        }
+        return myBuildTree(preorder, inorder, 0, n - 1, 0, n - 1);
+    }
+
+    int ans;
+    int depth(TreeNode* rt){
+        if (rt == NULL) {
+            return 0; // 访问到空节点了，返回0
+        }
+        int L = depth(rt->left); // 左儿子为根的子树的深度
+        int R = depth(rt->right); // 右儿子为根的子树的深度
+        ans = max(ans, L + R + 1); // 计算d_node即L+R+1 并更新ans
+        return max(L, R) + 1; // 返回该节点为根的子树的深度
+    }
+
+    int diameterOfBinaryTree(TreeNode* root) {
         ans = 1;
         depth(root);
         return ans - 1;
     }
-    int ans;
-    int depth(BiTNode* rt){
-        if (rt == NULL) {
-            return 0; // 访问到空节点了，返回0
-        }
-        int L = depth(rt->lchild); // 左儿子为根的子树的深度
-        int R = depth(rt->rchild); // 右儿子为根的子树的深度
-        ans = max(ans, L + R + 1); // 计算d_node即L+R+1 并更新ans
-        return max(L, R) + 1; // 返回该节点为根的子树的深度
-    }
 };
 int main(){
     int n1 = 0, n2 = 0, t = 0;
-    cout << "number of num1: ";
+    cout << "number of nodes: ";
     cin >> n1;
-    int nums1[n1+1];
-    for (int i = 1; i <= n1; i++){
+    cout << "preorder: ";
+    vector<int> nums1(n1);
+    for (int i = 0; i < n1; i++){
         cin >> t;
         nums1[i] = t;
     }
-    cout << "number of num2: ";
-    cin >> n2;
-    int nums2[n2+1];
-    for (int i = 1; i <= n2; i++){
+    cout << "inorder: ";
+    vector<int> nums2(n1);
+    for (int i = 0; i < n1; i++){
         cin >> t;
         nums2[i] = t;
     }
     Solution sol;
-    BiTree bt = sol.PreInCreat(nums1, nums2, 1, n1, 1, n2);
+    TreeNode* bt = sol.buildTree(nums1, nums2);
     cout << sol.diameterOfBinaryTree(bt);
     return 0;
 }
+/*给定一棵二叉树，你需要计算它的直径长度。一棵二叉树的直径长度是任意两个结点路径长度中的最大值。这条路径可能穿过也可能不穿过根结点。*/
 // number of nums1: 5
 // 3 9 20 15 7
 // number of nums1: 5

@@ -87,6 +87,17 @@ int main(){
     cout << sol.shortestBridge(grid);
     return 0;
 }
+/*
+在给定的二维二进制数组 A 中，存在两座岛。（岛是由四面相连的 1 形成的一个最大组。）
+
+现在，我们可以将 0 变为 1，以使两座岛连接起来，变成一座岛。
+
+返回必须翻转的 0 的最小数目。（可以保证答案至少是 1 。）
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/shortest-bridge
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。*/
+// 广度优先查找
 // number of rows: 5
 // number of columns: 5
 // 1 1 1 1 1

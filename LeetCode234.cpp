@@ -57,6 +57,7 @@ public:
         }
         return slow;
     }
+    // 同160题，似乎比开始更加简洁
     LinkList CreateList2(LinkList &head, vector<int> nums){
         int n = nums.size();
         ListNode *s,*r=head;
@@ -88,7 +89,7 @@ int main(){
     cout << boolalpha << sol.isPalindrome(head);
     return 0;
 }
-
+/*给你一个单链表的头节点 head ，请你判断该链表是否为回文链表。如果是，返回 true ；否则，返回 false 。*/
 /**
  * 我把创建的头结点删了
  */

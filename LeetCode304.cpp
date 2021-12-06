@@ -1,5 +1,6 @@
 #include<vector>
 #include<iostream>
+#include<cstdlib>
 using namespace std;
 
 class NumMatrix {
@@ -17,9 +18,18 @@ public:
                 }
             }
         }
+        // 为了验证
+        int rows = sums.size(), columns = sums[0].size();
+        for (int i = 0; i < rows; i++){
+            for (int j = 0; j < columns; j++){
+                cout << sums[i][j] << " ";
+            }
+            cout << endl;
+        }
     }
 
     int sumRegion(int row1, int col1, int row2, int col2) {
+        cout << row2 + 1 << col2 + 1<< row1<< col2 + 1<< row2 + 1<< col1<< row1<< col1 << endl;
         return sums[row2 + 1][col2 + 1] - sums[row1][col2 + 1] - sums[row2 + 1][col1] + sums[row1][col1];
     }
 };
@@ -32,31 +42,30 @@ int main(){
     cin >> rows;
     cout << "number of columns: ";
     cin >> columns;
+    srand(rows + columns);
     for (int i = 1; i <= rows; i++){
         for (int j = 1; j <= columns; j++){
-            cin >> t;
+            t = rand() % 10 + 1;
             child.push_back(t);
         }
         grid.push_back(child);
         child.clear();
     }
     NumMatrix sol = NumMatrix(grid);
-    cout << "number of ponits: ";
-    cin >> rows;
-    for (int i = 1; i <= rows; i++){
-        for (int j = 1; j <= 4; j++){
-            cin >> t;
-            child.push_back(t);
-        }
-        point.push_back(child);
-        child.clear();
-    }
-    for (int i = 0; i < rows; i++){
-        cout << sol.sumRegion(point[i][0], point[i][1], point[i][2], point[i][3]) << endl;
-    }
-    
+    cout << sol.sumRegion(rand() % rows, rand() % columns, rand() % rows, rand() % columns) << endl;
     return 0;
 }
+/*给定一个二维矩阵 matrix，以下类型的多个请求：
+
+计算其子矩形范围内元素的总和，该子矩阵的 左上角 为 (row1, col1) ，右下角 为 (row2, col2) 。
+实现 NumMatrix 类：
+
+NumMatrix(int[][] matrix) 给定整数矩阵 matrix 进行初始化
+int sumRegion(int row1, int col1, int row2, int col2) 返回 左上角 (row1, col1) 、右下角 (row2, col2) 所描述的子矩阵的元素 总和 。
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/range-sum-query-2d-immutable
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。*/
 // number of rows: 5
 // number of columns: 5
 // 3 0 1 4 2

@@ -43,3 +43,13 @@ int main(){
     cout << solution.getRandom();
     return 0;
 }
+/*给定一个单链表，随机选择链表的一个节点，并返回相应的节点值。保证每个节点被选的概率一样。
+
+进阶:
+如果链表十分大且长度未知，如何解决这个问题？你能否使用常数级空间复杂度实现？
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/linked-list-random-node
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。*/
+// 水库算法
+// 官方没有代码，不知道哪里来的了

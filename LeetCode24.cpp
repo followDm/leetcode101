@@ -1,6 +1,7 @@
 #include <vector>
 #include<algorithm>
 #include<iostream>
+#include<cstdlib>
 using namespace std;
 
 typedef struct ListNode{
@@ -24,6 +25,7 @@ public:
         }
         return dummyHead->next;
     }
+    // 同21题目的方法
     LinkList CreateList2(vector<int> nums){
         int n = nums.size();
         ListNode* L=(LinkList)malloc(sizeof(ListNode));
@@ -48,15 +50,17 @@ int main(){
     int n = 0, t = 0;
     cout << "number of nums: ";
     cin >> n;
+    srand(n);
     for (int i = 1; i <= n; i++){
-        cin >> t;
+        t = rand() % 10 + 1;
         nums.push_back(t);
     }
     ListNode *head;
     Solution sol;
     LinkList ll = sol.CreateList2(nums);
-    sol.swapPairs(ll);
+    ll = sol.swapPairs(ll);
     return 0;
 }
+/*给你一个链表，两两交换其中相邻的节点，并返回交换后链表的头节点。你必须在不修改节点内部的值的情况下完成本题（即，只能进行节点交换）。*/
 // number of nums: 4
 // 1 2 3 4

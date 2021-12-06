@@ -10,6 +10,8 @@ public:
         }
         int m = matrix.size(), n = matrix[0].size();
         vector<vector<int>> dist(m, vector<int>(n, INT_MAX / 2));
+        // 优化了后的动态规划
+        // 只有 水平向左移动 和 竖直向上移动；只有 水平向右移动 和 竖直向下移动。
         for (int i = 0; i < m; ++i) {
             for (int j = 0; j < n; ++j) {
                 if (matrix[i][j] == 0) {
@@ -71,6 +73,14 @@ int main(){
     cout << "]";
     return 0;
 }
+/*
+给定一个由 0 和 1 组成的矩阵 mat ，请输出一个大小相同的矩阵，其中每一个格子是 mat 中对应位置元素到最近的 0 的距离。
+
+两个相邻元素间的距离为 1 。
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/01-matrix
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。*/
 // number of rows: 3
 // number of columns: 4
 // 0 0 0 0

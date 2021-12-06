@@ -1,64 +1,98 @@
 #include<array>
+#include<vector>
+#include<stack>
+#include<unordered_map>
 #include<iostream>
 using namespace std;
 
-typedef struct BiTNode{
-	int data;
-	struct BiTNode *lchild,*rchild;
-}BiTNode, *BiTree;
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
 
 class Solution {
 public:
-    BiTree PreInCreat(int A[], int B[], int l1, int h1, int l2, int h2) {
-        BiTree root= (BiTNode*) malloc (sizeof (BiTNode) ) ;
-        root->data=A[l1];
-        int i = 0;
-        for (i = l2; B [i] != root->data; i++);
-        //子树长度
-        int llen = i - l2;
-        int rlen = h2 - i;
-        if (llen)
-            root->lchild = PreInCreat(A, B, l1+1, l1+llen, l2, l2+llen-1);
-        else
-            root->lchild = nullptr;
+    // TreeNode* PreInCreat(vector<int> &A, vector<int> &B, int l1, int h1, int l2, int h2) {
+    //     TreeNode* root= (TreeNode*) malloc (sizeof (TreeNode) ) ;
+    //     root->val=A[l1];
+    //     int i = 0;
+    //     for (i = l2; B[i] != root->val; i++);
+    //     //子树长度
+    //     int llen = i - l2;
+    //     int rlen = h2 - i;
+    //     if (llen)
+    //         root->left = PreInCreat(A, B, l1+1, l1+llen, l2, l2+llen-1);
+    //     else
+    //         root->left = nullptr;
 
-        if (rlen)
-            root->rchild = PreInCreat(A, B, h1-rlen+1, h1, h2-rlen+1, h2);
-        else
-            root->rchild = nullptr;
+    //     if (rlen)
+    //         root->right = PreInCreat(A, B, h1-rlen+1, h1, h2-rlen+1, h2);
+    //     else
+    //         root->right = nullptr;
+    //     return root;
+    // }
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        if (!preorder.size()) {
+            return nullptr;
+        }
+        TreeNode* root = new TreeNode(preorder[0]);
+        stack<TreeNode*> stk;
+        stk.push(root);
+        int inorderIndex = 0;
+        for (int i = 1; i < preorder.size(); ++i) {
+            int preorderVal = preorder[i];
+            TreeNode* node = stk.top();
+            if (node->val != inorder[inorderIndex]) {
+                node->left = new TreeNode(preorderVal);
+                stk.push(node->left);
+            }
+            else {
+                while (!stk.empty() && stk.top()->val == inorder[inorderIndex]) {
+                    node = stk.top();
+                    stk.pop();
+                    ++inorderIndex;
+                }
+                node->right = new TreeNode(preorderVal);
+                stk.push(node->right);
+            }
+        }
         return root;
     }
-    bool check(BiTNode *p, BiTNode *q) {
+    bool check(TreeNode *p, TreeNode *q) {
         if (!p && !q) return true;
         if (!p || !q) return false;
-        return p->data == q->data && check(p->lchild, q->rchild) && check(p->rchild, q->lchild);
+        return p->val == q->val && check(p->left, q->right) && check(p->right, q->left);
     }
-    bool isSymmetric(BiTNode* root) {
+    bool isSymmetric(TreeNode* root) {
         return check(root, root);
     }
 };
 
 int main(){
     int n1 = 0, n2 = 0, t = 0;
-    cout << "number of num1: ";
+    cout << "number of nodes: ";
     cin >> n1;
-    int nums1[n1+1];
+    cout << "preorder: ";
+    vector<int> nums1;
     for (int i = 1; i <= n1; i++){
         cin >> t;
-        nums1[i] = t;
+        // 如果定义了(n)等，不能这么push
+        nums1.push_back(t);
     }
-    cout << "number of num2: ";
-    cin >> n2;
-    int nums2[n2+1];
-    for (int i = 1; i <= n2; i++){
+    cout << "inorder: ";
+    vector<int> nums2;
+    for (int i = 1; i <= n1; i++){
         cin >> t;
-        nums2[i] = t;
+        nums2.push_back(t);
     }
     Solution sol;
-    BiTree bt = sol.PreInCreat(nums1, nums2, 1, n1, 1, n2);
+    TreeNode* bt = sol.buildTree(nums1, nums2);
     cout << boolalpha << sol.isSymmetric(bt);
     return 0;
 }
+/*给定一个二叉树，检查它是否是镜像对称的。*/
 // number of nums1: 7
 // 1 2 3 4 2 4 3
 // number of nums1: 7

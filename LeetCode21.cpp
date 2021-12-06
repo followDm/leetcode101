@@ -1,6 +1,7 @@
 #include <vector>
 #include<algorithm>
 #include<iostream>
+#include<cstdlib>
 using namespace std;
 
 typedef struct ListNode{
@@ -53,22 +54,30 @@ int main(){
     int n = 0, t = 0;
     cout << "number of num1: ";
     cin >> n;
+    srand(n);
+    // 这里直接用随机数不符合要求，因为要求的是递增的
+    int mat = 0;
     for (int i = 1; i <= n; i++){
-        cin >> t;
+        t = mat + rand() % 5 + 1;
+        mat = t;
         nums1.push_back(t);
     }
     cout << "number of num2: ";
     cin >> n;
+    srand(n);
+    mat = 0;
     for (int i = 1; i <= n; i++){
-        cin >> t;
+        t = mat + rand() % 5 + 1;
+        mat = t;
         nums2.push_back(t);
     }
     Solution sol;
     LinkList l1 = sol.CreateList2(nums1);
     LinkList l2 = sol.CreateList2(nums2);
-    sol.mergeTwoLists(l1, l2);
+    LinkList lRes = sol.mergeTwoLists(l1, l2);
     return 0;
 }
+/*将两个升序链表合并为一个新的 升序 链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。 */
 // number of nums1: 4
 // 1 3 5 7
 // number of nums1: 4
