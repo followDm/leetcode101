@@ -5,78 +5,91 @@
 #include<iostream>
 using namespace std;
 
-typedef struct BiTNode{
-	int data;
-	struct BiTNode *lchild,*rchild;
-    BiTNode(int x) : data(x), lchild(nullptr), rchild(nullptr){};
-}BiTNode, *BiTree;
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
 
 class Solution {
 public:
-    BiTNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
         if (!preorder.size()) {
             return nullptr;
         }
-        BiTNode* root = new BiTNode(preorder[0]);
-        stack<BiTNode*> stk;
+        TreeNode* root = new TreeNode(preorder[0]);
+        stack<TreeNode*> stk;
         stk.push(root);
         int inorderIndex = 0;
         for (int i = 1; i < preorder.size(); ++i) {
             int preorderVal = preorder[i];
-            BiTNode* node = stk.top();
-            if (node->data != inorder[inorderIndex]) {
-                node->lchild = new BiTNode(preorderVal);
-                stk.push(node->lchild);
-            } else {
-                while (!stk.empty() && stk.top()->data == inorder[inorderIndex]) {
+            TreeNode* node = stk.top();
+            if (node->val != inorder[inorderIndex]) {
+                node->left = new TreeNode(preorderVal);
+                stk.push(node->left);
+            }
+            else {
+                while (!stk.empty() && stk.top()->val == inorder[inorderIndex]) {
                     node = stk.top();
                     stk.pop();
                     ++inorderIndex;
                 }
-                node->rchild = new BiTNode(preorderVal);
-                stk.push(node->rchild);
+                node->right = new TreeNode(preorderVal);
+                stk.push(node->right);
             }
         }
         return root;
     }
-    int findBottomlchildValue(BiTNode* root) {
-        queue<BiTNode*> que;
-        if (root != NULL) que.push(root);
-        int result = 0;
-        while (!que.empty()) {
-            int size = que.size();
+    auto findBottomlchildValue(TreeNode* root) {
+        auto q = queue<TreeNode*>();
+        auto s = stack<TreeNode*>();
+        q.push(root);
+        while (!q.empty()) {
+            int size = q.size();
             for (int i = 0; i < size; i++) {
-                BiTNode* node = que.front();
-                que.pop();
-                if (i == 0) result = node->data; // 记录最后一行第一个元素
-                if (node->lchild) que.push(node->lchild);
-                if (node->rchild) que.push(node->rchild);
+                auto node = q.front();
+                q.pop();
+                auto left = node->left, right = node->right;
+                if (left != nullptr) {
+                    q.push(left);
+                    if (left->left == nullptr && left->right == nullptr) {
+                        // 将符合左的叶子结点放入栈
+                        s.push(left);
+                    }
+                } else if (right != nullptr) {
+                    q.push(right);
+                }
             }
         }
-        return result;
-    } 
+        // 如果栈非空，则返回栈顶的值
+        return s.empty() ? -1 : s.top()->val;
+    }
 };
 int main(){
     int n1 = 0, n2 = 0, t = 0, target = 0;
-    cout << "number of num1: ";
+    cout << "number of nodes: ";
     cin >> n1;
+    cout << "preorder: ";
     vector<int> nums1;
     for (int i = 1; i <= n1; i++){
         cin >> t;
         nums1.push_back(t);
     }
-    cout << "number of num2: ";
-    cin >> n2;
+    cout << "inorder: ";
     vector<int> nums2;
-    for (int i = 1; i <= n2; i++){
+    for (int i = 1; i <= n1; i++){
         cin >> t;
         nums2.push_back(t);
     }
     Solution sol;
-    BiTree bt1 = sol.buildTree(nums1, nums2);
-    cout << sol.findBottomlchildValue(bt1);
+    TreeNode* bt = sol.buildTree(nums1, nums2);
+    cout << sol.findBottomlchildValue(bt);
     return 0;
 }
+/*给定一个二叉树的 根节点 root，请找出该二叉树的 最底层 最左边 节点的值。
+
+假设二叉树中至少有一个节点。*/
 // number of num1: 7
 // 1 2 4 3 5 7 6
 // number of num2: 7

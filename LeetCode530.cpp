@@ -39,21 +39,6 @@ public:
         }
         return root;
     }
-    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-        TreeNode* ancestor = root;
-        while (true) {
-            if (p->val < ancestor->val && q->val < ancestor->val) {
-                ancestor = ancestor->left;
-            }
-            else if (p->val > ancestor->val && q->val > ancestor->val) {
-                ancestor = ancestor->right;
-            }
-            else {
-                break;
-            }
-        }
-        return ancestor;
-    }
     void dfs(TreeNode* root, int& pre, int& ans) {
         if (root == nullptr) {
             return;
@@ -75,17 +60,17 @@ public:
 };
 int main(){
     int n1 = 0, n2 = 0, t = 0, target = 0, p = 0, q = 0;
-    cout << "number of num1: ";
+    cout << "number of nodes: ";
     cin >> n1;
+    cout << "preorder: ";
     vector<int> nums1;
     for (int i = 1; i <= n1; i++){
         cin >> t;
         nums1.push_back(t);
     }
-    cout << "number of num2: ";
-    cin >> n2;
+    cout << "inorder: ";
     vector<int> nums2;
-    for (int i = 1; i <= n2; i++){
+    for (int i = 1; i <= n1; i++){
         cin >> t;
         nums2.push_back(t);
     }
@@ -94,6 +79,9 @@ int main(){
     cout << sol.getMinimumDifference(bt);
     return 0;
 }
+/*给你一个二叉搜索树的根节点 root ，返回 树中任意两不同节点值之间的最小差值 。
+
+差值是一个正数，其数值等于两值之差的绝对值。*/
 // number of num1: 3
 // 1 3 2
 // number of num2: 3

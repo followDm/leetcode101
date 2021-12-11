@@ -4,78 +4,81 @@
 #include<iostream>
 using namespace std;
 
-typedef struct BiTNode{
-	int data;
-	struct BiTNode *lchild,*rchild;
-    BiTNode(int x) : data(x), lchild(nullptr), rchild(nullptr){};
-}BiTNode, *BiTree;
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
 
 class Solution {
 public:
-    BiTNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
         if (!preorder.size()) {
             return nullptr;
         }
-        BiTNode* root = new BiTNode(preorder[0]);
-        stack<BiTNode*> stk;
+        TreeNode* root = new TreeNode(preorder[0]);
+        stack<TreeNode*> stk;
         stk.push(root);
         int inorderIndex = 0;
         for (int i = 1; i < preorder.size(); ++i) {
             int preorderVal = preorder[i];
-            BiTNode* node = stk.top();
-            if (node->data != inorder[inorderIndex]) {
-                node->lchild = new BiTNode(preorderVal);
-                stk.push(node->lchild);
-            } else {
-                while (!stk.empty() && stk.top()->data == inorder[inorderIndex]) {
+            TreeNode* node = stk.top();
+            if (node->val != inorder[inorderIndex]) {
+                node->left = new TreeNode(preorderVal);
+                stk.push(node->left);
+            }
+            else {
+                while (!stk.empty() && stk.top()->val == inorder[inorderIndex]) {
                     node = stk.top();
                     stk.pop();
                     ++inorderIndex;
                 }
-                node->rchild = new BiTNode(preorderVal);
-                stk.push(node->rchild);
+                node->right = new TreeNode(preorderVal);
+                stk.push(node->right);
             }
         }
         return root;
     }
-    bool isLeafNode(BiTNode* node) {
-        return !node->lchild && !node->rchild;
+    bool isLeafNode(TreeNode* node) {
+        return !node->left && !node->right;
     }
-    int dfs(BiTNode* node) {
+    int dfs(TreeNode* node) {
         int ans = 0;
-        if (node->lchild) {
-            ans += isLeafNode(node->lchild) ? node->lchild->data : dfs(node->lchild);
+        if (node->left) {
+            ans += isLeafNode(node->left) ? node->left->val : dfs(node->left);
         }
-        if (node->rchild && !isLeafNode(node->rchild)) {
-            ans += dfs(node->rchild);
+        if (node->right && !isLeafNode(node->right)) {
+            ans += dfs(node->right);
         }
         return ans;
     }
-    int sumOflchildLeaves(BiTNode* root) {
+    int sumOfleftLeaves(TreeNode* root) {
         return root ? dfs(root) : 0;
     }   
 };
 int main(){
     int n1 = 0, n2 = 0, t = 0, target = 0;
-    cout << "number of num1: ";
+    cout << "number of nodes: ";
     cin >> n1;
+    cout << "preorder: ";
     vector<int> nums1;
     for (int i = 1; i <= n1; i++){
         cin >> t;
         nums1.push_back(t);
     }
-    cout << "number of num2: ";
-    cin >> n2;
+    cout << "inorder: ";
     vector<int> nums2;
-    for (int i = 1; i <= n2; i++){
+    for (int i = 1; i <= n1; i++){
         cin >> t;
         nums2.push_back(t);
     }
     Solution sol;
-    BiTree bt1 = sol.buildTree(nums1, nums2);
-    cout << sol.sumOflchildLeaves(bt1);
+    TreeNode* bt1 = sol.buildTree(nums1, nums2);
+    cout << sol.sumOfleftLeaves(bt1);
     return 0;
 }
+/*计算给定二叉树的所有左叶子之和。*/
 // number of num1: 5
 // 3 9 20 15 7
 // number of num2: 5

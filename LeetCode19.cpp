@@ -1,16 +1,19 @@
-#include <vector>
+#include<vector>
 #include<algorithm>
+#include<cstdlib>
 #include<iostream>
 using namespace std;
 
 typedef struct ListNode{
     int val;
-    struct ListNode *next;
+    ListNode *next;
+    ListNode(int x) : val(x), next(nullptr) {};
+    ListNode(int x, ListNode* y) : val(x), next(y) {}
 }ListNode, *LinkList;
 
 class Solution {
 public:
-    ListNode* removeNthFromEnd(ListNode* head, int n) {
+    ListNode* removeNthFromEnd(LinkList &head, int n) {
         ListNode* dummy = head;
         ListNode* first = head;
         ListNode* second = dummy;
@@ -21,10 +24,13 @@ public:
             first = first->next;
             second = second->next;
         }
+        ListNode* tem;
+        tem = second->next;
         second->next = second->next->next;
-        ListNode* ans = dummy->next;
-        delete dummy;
-        return ans;
+        free(tem);
+        // ListNode* ans = dummy->next;
+        // delete dummy;
+        return head;
     }
 
     LinkList CreateList2(LinkList &head, vector<int> nums){
@@ -49,8 +55,9 @@ int main(){
     int n = 0, t = 0, target;
     cout << "number of num: ";
     cin >> n;
+    srand(n);
     for (int i = 1; i <= n; i++){
-        cin >> t;
+        t = rand() % 9 + 1;
         nums.push_back(t);
     }
     cout << "target: ";
@@ -61,7 +68,9 @@ int main(){
     sol.removeNthFromEnd(head, target);
     return 0;
 }
-
+/*给你一个链表，删除链表的倒数第 n 个结点，并且返回链表的头结点。*/
+// 好的办法是用栈和双指针
+// 两个指针 first 和 second 同时对链表进行遍历，并且 first 比 second 超前 n 个节点。当 first 遍历到链表的末尾时，second 就恰好处于倒数第 n 个节点
 // number of num: 5
 // 1 2 3 5 5
 // target: 2

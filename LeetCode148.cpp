@@ -1,13 +1,21 @@
 #include <vector>
 #include<algorithm>
+#include<cstdlib>
 #include<iostream>
 using namespace std;
 
+// typedef struct ListNode{
+//     int val;
+//     struct ListNode *next;
+//     ListNode(int x) : val(x), next(nullptr) {}
+// }ListNode, *LinkList;
 typedef struct ListNode{
     int val;
-    struct ListNode *next;
+    ListNode *next;
+    ListNode() : val(0), next(nullptr) {};
+    ListNode(int x) : val(x), next(nullptr) {};
+    ListNode(int x, ListNode* y) : val(x), next(y) {}
 }ListNode, *LinkList;
-
 class Solution {
 public:
     ListNode* sortList(ListNode* head) {
@@ -93,16 +101,27 @@ int main(){
     int n = 0, t = 0;
     cout << "number of num: ";
     cin >> n;
+    srand(n);
     for (int i = 1; i <= n; i++){
-        cin >> t;
+        t = rand() % 9 + 1;
         nums.push_back(t);
     }
     ListNode* head = (LinkList)malloc(sizeof(ListNode));
     Solution sol;
+    // 指明头结点了
     sol.CreateList2(head, nums);
     sol.sortList(head);
     return 0;
 }
+/*给你链表的头结点 head ，请将其按 升序 排列并返回 排序后的链表 。
 
+进阶：
+
+你可以在 O(n log n) 时间复杂度和常数级空间复杂度下，对链表进行排序吗？
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/sort-list
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。*/
+// 自底向上归并排序
 // number of num: 5
 // 1 2 3 5 5

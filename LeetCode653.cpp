@@ -45,12 +45,13 @@ public:
         int l = 0, r = list.size() - 1;
         while (l < r) {
             int sum = list.at(l) + list.at(r);
-            if (sum == k)
-                return true;
-            if (sum < k)
+            if (sum < k) {
                 l++;
-            else
+            } if (sum > k) {
                 r--;
+            } else {
+                return true;
+            }
         }
         return false;
     }
@@ -64,17 +65,17 @@ public:
 };
 int main(){
     int n1 = 0, n2 = 0, t = 0, target = 0;
-    cout << "number of num1: ";
+    cout << "number of nodes: ";
     cin >> n1;
+    cout << "inorder: ";
     vector<int> nums1;
     for (int i = 1; i <= n1; i++){
         cin >> t;
         nums1.push_back(t);
     }
-    cout << "number of num2: ";
-    cin >> n2;
+    cout << "postorder: ";
     vector<int> nums2;
-    for (int i = 1; i <= n2; i++){
+    for (int i = 1; i <= n1; i++){
         cin >> t;
         nums2.push_back(t);
     }
@@ -83,9 +84,11 @@ int main(){
     cin >> k;
     Solution sol;
     NodeTree bt = sol.buildTree(nums1, nums2);
-    sol.findTarget(bt, k);
+    cout << boolalpha<< sol.findTarget(bt, k);
     return 0;
 }
+/*给定一个二叉搜索树 root 和一个目标结果 k，如果 BST 中存在两个元素且它们的和等于给定的目标结果，则返回 true。*/
+// 先中序遍历，得到递增的数组，然后双指针遍历
 //中序和后序
 // number of num1: 9
 // 1 2 3 4 5 6 7 8 9

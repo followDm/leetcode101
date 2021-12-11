@@ -42,17 +42,17 @@ public:
 };
 int main(){
     int n1 = 0, n2 = 0, t = 0, target = 0, p = 0, q = 0;
-    cout << "number of num1: ";
+    cout << "number of nodes: ";
     cin >> n1;
+    cout << "inorder: ";
     vector<int> nums1;
     for (int i = 1; i <= n1; i++){
         cin >> t;
         nums1.push_back(t);
     }
-    cout << "number of num2: ";
-    cin >> n2;
+    cout << "postorder: ";
     vector<int> nums2;
-    for (int i = 1; i <= n2; i++){
+    for (int i = 1; i <= n1; i++){
         cin >> t;
         nums2.push_back(t);
     }
@@ -60,6 +60,7 @@ int main(){
     NodeTree bt = sol.buildTree(nums1, nums2);
     return 0;
 }
+/*根据一棵树的中序遍历与后序遍历构造二叉树。*/
 //中序和后序
 // number of num1: 5
 // 9 3 15 20 7

@@ -36,24 +36,27 @@ public:
 };
 int main(){
     int n1 = 0, n2 = 0, t = 0, target = 0, p = 0, q = 0;
-    cout << "number of num1: ";
+    cout << "number of nodes: ";
     cin >> n1;
+    cout << "preorder: ";
     vector<int> nums1;
     for (int i = 1; i <= n1; i++){
         cin >> t;
         nums1.push_back(t);
     }
-    cout << "number of num2: ";
-    cin >> n2;
+    cout << "postorder: ";
     vector<int> nums2;
-    for (int i = 1; i <= n2; i++){
+    for (int i = 1; i <= n1; i++){
         cin >> t;
         nums2.push_back(t);
     }
     Solution sol;
-    sol.constructFromPrePost(nums1, nums2);
+    TreeNode* res = sol.constructFromPrePost(nums1, nums2);
     return 0;
 }
+/*返回与给定的前序和后序遍历匹配的任何二叉树。
+
+ pre 和 post 遍历中的值是不同的正整数。*/
 //先序和后序？
 // number of num1: 7
 // 1 2 3 4 5 6 7

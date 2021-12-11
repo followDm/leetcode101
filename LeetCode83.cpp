@@ -5,7 +5,9 @@ using namespace std;
 
 typedef struct ListNode{
     int val;
-    struct ListNode *next;
+    ListNode *next;
+    ListNode(int x) : val(x), next(nullptr) {};
+    ListNode(int x, ListNode* y) : val(x), next(y) {}
 }ListNode, *LinkList;
 
 class Solution {
@@ -16,9 +18,13 @@ public:
         }
 
         ListNode* cur = head;
+        ListNode* tem;
         while (cur->next) {
             if (cur->val == cur->next->val) {
+                tem = cur->next;
                 cur->next = cur->next->next;
+                // 小小的一步就是释放空间了
+                free(tem);
             } else {
                 cur = cur->next;
             }
@@ -45,19 +51,17 @@ public:
 };
 
 int main(){
-    vector<int> nums;
+    vector<int> nums = {1, 2, 3, 3, 4, 5, 5};
     int n = 0, t = 0;
-    cout << "number of num: ";
-    cin >> n;
-    for (int i = 1; i <= n; i++){
-        cin >> t;
-        nums.push_back(t);
-    }
+    // 这里输入也不想输入了，直接定义好吧
     ListNode* head = (LinkList)malloc(sizeof(ListNode));
     Solution sol;
     sol.CreateList2(head, nums);
     sol.deleteDuplicates(head);
     return 0;
 }
+/*存在一个按升序排列的链表，给你这个链表的头节点 head ，请你删除所有重复的元素，使每个元素 只出现一次 。
+
+返回同样按升序排列的结果链表。*/
 // number of nums: 5
 // 1 3 5 5 5
