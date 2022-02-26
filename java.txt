@@ -1,0 +1,2807 @@
+class Solution {
+    public int maxAreaOfIsland(int[][] grid) {
+        int ans = 0;
+        for (int i = 0; i != grid.length; ++i) {
+            for (int j = 0; j != grid[0].length; ++j) {
+                int cur = 0;
+                Deque<Integer> stacki = new LinkedList<Integer>();
+                Deque<Integer> stackj = new LinkedList<Integer>();
+                stacki.push(i);
+                stackj.push(j);
+                while (!stacki.isEmpty()) {
+                    int cur_i = stacki.pop(), cur_j = stackj.pop();
+                    if (cur_i < 0 || cur_j < 0 || cur_i == grid.length || cur_j == grid[0].length || grid[cur_i][cur_j] != 1) {
+                        continue;
+                    }
+                    ++cur;
+                    grid[cur_i][cur_j] = 0;
+                    int[] di = {0, 0, 1, -1};
+                    int[] dj = {1, -1, 0, 0};
+                    for (int index = 0; index != 4; ++index) {
+                        int next_i = cur_i + di[index], next_j = cur_j + dj[index];
+                        stacki.push(next_i);
+                        stackj.push(next_j);
+                    }
+                }
+                ans = Math.max(ans, cur);
+            }
+        }
+        return ans;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/max-area-of-island/solution/dao-yu-de-zui-da-mian-ji-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+// number of rows: 3
+// number of columns: 8
+// 1 0 1 1 0 1 0 1
+// 1 0 1 1 0 1 1 1
+// 0 0 0 0 0 0 0 1
+// 6
+// 
+class Solution {
+    public int findCircleNum(int[][] isConnected) {
+        int provinces = isConnected.length;
+        boolean[] visited = new boolean[provinces];
+        int circles = 0;
+        Queue<Integer> queue = new LinkedList<Integer>();
+        for (int i = 0; i < provinces; i++) {
+            if (!visited[i]) {
+                queue.offer(i);
+                while (!queue.isEmpty()) {
+                    int j = queue.poll();
+                    visited[j] = true;
+                    for (int k = 0; k < provinces; k++) {
+                        if (isConnected[j][k] == 1 && !visited[k]) {
+                            queue.offer(k);
+                        }
+                    }
+                }
+                circles++;
+            }
+        }
+        return circles;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/number-of-provinces/solution/sheng-fen-shu-liang-by-leetcode-solution-eyk0/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public List<List<Integer>> permute(int[] nums) {
+        List<List<Integer>> res = new ArrayList<List<Integer>>();
+
+        List<Integer> output = new ArrayList<Integer>();
+        for (int num : nums) {
+            output.add(num);
+        }
+
+        int n = nums.length;
+        backtrack(n, output, res, 0);
+        return res;
+    }
+
+    public void backtrack(int n, List<Integer> output, List<List<Integer>> res, int first) {
+        // 所有数都填完了
+        if (first == n) {
+            res.add(new ArrayList<Integer>(output));
+        }
+        for (int i = first; i < n; i++) {
+            // 动态维护数组
+            Collections.swap(output, first, i);
+            // 继续递归填下一个数
+            backtrack(n, output, res, first + 1);
+            // 撤销操作
+            Collections.swap(output, first, i);
+        }
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/permutations/solution/quan-pai-lie-by-leetcode-solution-2/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    List<Integer> temp = new ArrayList<Integer>();
+    List<List<Integer>> ans = new ArrayList<List<Integer>>();
+
+    public List<List<Integer>> combine(int n, int k) {
+        dfs(1, n, k);
+        return ans;
+    }
+
+    public void dfs(int cur, int n, int k) {
+        // 剪枝：temp 长度加上区间 [cur, n] 的长度小于 k，不可能构造出长度为 k 的 temp
+        if (temp.size() + (n - cur + 1) < k) {
+            return;
+        }
+        // 记录合法的答案
+        if (temp.size() == k) {
+            ans.add(new ArrayList<Integer>(temp));
+            return;
+        }
+        // 考虑选择当前位置
+        temp.add(cur);
+        dfs(cur + 1, n, k);
+        temp.remove(temp.size() - 1);
+        // 考虑不选择当前位置
+        dfs(cur + 1, n, k);
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/combinations/solution/zu-he-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+
+class Solution {
+    public boolean exist(char[][] board, String word) {
+        int h = board.length, w = board[0].length;
+        boolean[][] visited = new boolean[h][w];
+        for (int i = 0; i < h; i++) {
+            for (int j = 0; j < w; j++) {
+                boolean flag = check(board, visited, i, j, word, 0);
+                if (flag) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean check(char[][] board, boolean[][] visited, int i, int j, String s, int k) {
+        if (board[i][j] != s.charAt(k)) {
+            return false;
+        } else if (k == s.length() - 1) {
+            return true;
+        }
+        visited[i][j] = true;
+        int[][] directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+        boolean result = false;
+        for (int[] dir : directions) {
+            int newi = i + dir[0], newj = j + dir[1];
+            if (newi >= 0 && newi < board.length && newj >= 0 && newj < board[0].length) {
+                if (!visited[newi][newj]) {
+                    boolean flag = check(board, visited, newi, newj, s, k + 1);
+                    if (flag) {
+                        result = true;
+                        break;
+                    }
+                }
+            }
+        }
+        visited[i][j] = false;
+        return result;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/word-search/solution/dan-ci-sou-suo-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public List<List<String>> solveNQueens(int n) {
+        int[] queens = new int[n];
+        Arrays.fill(queens, -1);
+        List<List<String>> solutions = new ArrayList<List<String>>();
+        solve(solutions, queens, n, 0, 0, 0, 0);
+        return solutions;
+    }
+
+    public void solve(List<List<String>> solutions, int[] queens, int n, int row, int columns, int diagonals1, int diagonals2) {
+        if (row == n) {
+            List<String> board = generateBoard(queens, n);
+            solutions.add(board);
+        } else {
+            int availablePositions = ((1 << n) - 1) & (~(columns | diagonals1 | diagonals2));
+            while (availablePositions != 0) {
+                int position = availablePositions & (-availablePositions);
+                availablePositions = availablePositions & (availablePositions - 1);
+                int column = Integer.bitCount(position - 1);
+                queens[row] = column;
+                solve(solutions, queens, n, row + 1, columns | position, (diagonals1 | position) << 1, (diagonals2 | position) >> 1);
+                queens[row] = -1;
+            }
+        }
+    }
+
+    public List<String> generateBoard(int[] queens, int n) {
+        List<String> board = new ArrayList<String>();
+        for (int i = 0; i < n; i++) {
+            char[] row = new char[n];
+            Arrays.fill(row, '.');
+            row[queens[i]] = 'Q';
+            board.add(new String(row));
+        }
+        return board;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/n-queens/solution/nhuang-hou-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+class Solution {
+    public int shortestBridge(int[][] A) {
+        int R = A.length, C = A[0].length;
+        int[][] colors = getComponents(A);
+
+        Queue<Node> queue = new LinkedList();
+        Set<Integer> target = new HashSet();
+
+        for (int r = 0; r < R; ++r)
+            for (int c = 0; c < C; ++c) {
+                if (colors[r][c] == 1) {
+                    queue.add(new Node(r, c, 0));
+                } else if (colors[r][c] == 2) {
+                    target.add(r * C + c);
+                }
+            }
+
+        while (!queue.isEmpty()) {
+            Node node = queue.poll();
+            if (target.contains(node.r * C + node.c))
+                return node.depth - 1;
+            for (int nei: neighbors(A, node.r, node.c)) {
+                int nr = nei / C, nc = nei % C;
+                if (colors[nr][nc] != 1) {
+                    queue.add(new Node(nr, nc, node.depth + 1));
+                    colors[nr][nc] = 1;
+                }
+            }
+        }
+
+        throw null;
+    }
+
+    public int[][] getComponents(int[][] A) {
+        int R = A.length, C = A[0].length;
+        int[][] colors = new int[R][C];
+        int t = 0;
+
+        for (int r0 = 0; r0 < R; ++r0)
+            for (int c0 = 0; c0 < C; ++c0)
+                if (colors[r0][c0] == 0 && A[r0][c0] == 1) {
+                    // Start dfs
+                    Stack<Integer> stack = new Stack();
+                    stack.push(r0 * C + c0);
+                    colors[r0][c0] = ++t;
+
+                    while (!stack.isEmpty()) {
+                        int node = stack.pop();
+                        int r = node / C, c = node % C;
+                        for (int nei: neighbors(A, r, c)) {
+                            int nr = nei / C, nc = nei % C;
+                            if (A[nr][nc] == 1 && colors[nr][nc] == 0) {
+                                colors[nr][nc] = t;
+                                stack.push(nr * C + nc);
+                            }
+                        }
+                    }
+                }
+
+        return colors;
+    }
+
+    public List<Integer> neighbors(int[][] A, int r, int c) {
+        int R = A.length, C = A[0].length;
+        List<Integer> ans = new ArrayList();
+        if (0 <= r-1) ans.add((r-1) * R + c);
+        if (0 <= c-1) ans.add(r * R + (c-1));
+        if (r+1 < R) ans.add((r+1) * R + c);
+        if (c+1 < C) ans.add(r * R + (c+1));
+        return ans;
+    }
+}
+
+class Node {
+    int r, c, depth;
+    Node(int r, int c, int d) {
+        this.r = r;
+        this.c = c;
+        depth = d;
+    }
+}
+
+作者：LeetCode
+链接：https://leetcode-cn.com/problems/shortest-bridge/solution/zui-duan-de-qiao-by-leetcode/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+1 1 1 1 1
+1 0 0 0 1
+1 0 1 0 1
+1 0 0 0 1
+1 1 1 1 1
+
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+
+public class Solution {
+
+    public List<List<String>> findLadders(String beginWord, String endWord, List<String> wordList) {
+        List<List<String>> res = new ArrayList<>();
+        // 因为需要快速判断扩展出的单词是否在 wordList 里，因此需要将 wordList 存入哈希表，这里命名为「字典」
+        Set<String> dict = new HashSet<>(wordList);
+        // 特殊用例判断
+        if (!dict.contains(endWord)) {
+            return res;
+        }
+
+        dict.remove(beginWord);
+
+        // 第 1 步：广度优先遍历建图
+        // 记录扩展出的单词是在第几次扩展的时候得到的，key：单词，value：在广度优先遍历的第几层
+        Map<String, Integer> steps = new HashMap<>();
+        steps.put(beginWord, 0);
+        // 记录了单词是从哪些单词扩展而来，key：单词，value：单词列表，这些单词可以变换到 key ，它们是一对多关系
+        Map<String, List<String>> from = new HashMap<>();
+        int step = 1;
+        boolean found = false;
+        int wordLen = beginWord.length();
+        Queue<String> queue = new LinkedList<>();
+        queue.offer(beginWord);
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                String currWord = queue.poll();
+                char[] charArray = currWord.toCharArray();
+                // 将每一位替换成 26 个小写英文字母
+                for (int j = 0; j < wordLen; j++) {
+                    char origin = charArray[j];
+                    for (char c = 'a'; c <= 'z'; c++) {
+                        charArray[j] = c;
+                        String nextWord = String.valueOf(charArray);
+                        if (steps.containsKey(nextWord) && step == steps.get(nextWord)) {
+                            from.get(nextWord).add(currWord);
+                        }
+                        if (!dict.contains(nextWord)) {
+                            continue;
+                        }
+                        // 如果从一个单词扩展出来的单词以前遍历过，距离一定更远，为了避免搜索到已经遍历到，且距离更远的单词，需要将它从 dict 中删除
+                        dict.remove(nextWord);
+                        // 这一层扩展出的单词进入队列
+                        queue.offer(nextWord);
+
+                        // 记录 nextWord 从 currWord 而来
+                        from.putIfAbsent(nextWord, new ArrayList<>());
+                        from.get(nextWord).add(currWord);
+                        // 记录 nextWord 的 step
+                        steps.put(nextWord, step);
+                        if (nextWord.equals(endWord)) {
+                            found = true;
+                        }
+                    }
+                    charArray[j] = origin;
+                }
+            }
+            step++;
+            if (found) {
+                break;
+            }
+        }
+
+        // 第 2 步：深度优先遍历找到所有解，从 endWord 恢复到 beginWord ，所以每次尝试操作 path 列表的头部
+        if (found) {
+            Deque<String> path = new ArrayDeque<>();
+            path.add(endWord);
+            dfs(from, path, beginWord, endWord, res);
+        }
+        return res;
+    }
+
+    public void dfs(Map<String, List<String>> from, Deque<String> path, String beginWord, String cur, List<List<String>> res) {
+        if (cur.equals(beginWord)) {
+            res.add(new ArrayList<>(path));
+            return;
+        }
+        for (String precursor : from.get(cur)) {
+            path.addFirst(precursor);
+            dfs(from, path, beginWord, precursor, res);
+            path.removeFirst();
+        }
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/word-ladder-ii/solution/dan-ci-jie-long-ii-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+hot
+dot
+dog
+lot
+log
+cog
+public class Solution {
+    public int climbStairs(int n) {
+        int[][] q = {{1, 1}, {1, 0}};
+        int[][] res = pow(q, n);
+        return res[0][0];
+    }
+
+    public int[][] pow(int[][] a, int n) {
+        int[][] ret = {{1, 0}, {0, 1}};
+        while (n > 0) {
+            if ((n & 1) == 1) {
+                ret = multiply(ret, a);
+            }
+            n >>= 1;
+            a = multiply(a, a);
+        }
+        return ret;
+    }
+
+    public int[][] multiply(int[][] a, int[][] b) {
+        int[][] c = new int[2][2];
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 2; j++) {
+                c[i][j] = a[i][0] * b[0][j] + a[i][1] * b[1][j];
+            }
+        }
+        return c;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/climbing-stairs/solution/pa-lou-ti-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public int rob(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int length = nums.length;
+        if (length == 1) {
+            return nums[0];
+        }
+        int first = nums[0], second = Math.max(nums[0], nums[1]);
+        for (int i = 2; i < length; i++) {
+            int temp = second;
+            second = Math.max(first + nums[i], second);
+            first = temp;
+        }
+        return second;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/house-robber/solution/da-jia-jie-she-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+public:
+    int numberOfArithmeticSlices(vector<int>& nums) {
+        int n = nums.size(), l = 0, ans = 0;
+        for(int i = 2; i < n; i++)  
+            nums[i] - nums[i-1] == nums[i-1] - nums[i-2] ? ans += ++l : l = 0;
+        return ans;
+    }
+};
+class Solution {
+    public int numberOfArithmeticSlices(int[] nums) {
+        int n = nums.length;
+        if (n == 1) {
+            return 0;
+        }
+
+        int d = nums[0] - nums[1], t = 0;
+        int ans = 0;
+        // 因为等差数列的长度至少为 3，所以可以从 i=2 开始枚举
+        for (int i = 2; i < n; ++i) {
+            if (nums[i - 1] - nums[i] == d) {
+                ++t;
+            } else {
+                d = nums[i - 1] - nums[i];
+                t = 0;
+            }
+            ans += t;
+        }
+        return ans;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/arithmetic-slices/solution/deng-chai-shu-lie-hua-fen-by-leetcode-so-g7os/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+https://leetcode-cn.com/problems/minimum-path-sum/
+class Solution {
+    public int minPathSum(int[][] grid) {
+        if (grid == null || grid.length == 0 || grid[0].length == 0) {
+            return 0;
+        }
+        int rows = grid.length, columns = grid[0].length;
+        int[][] dp = new int[rows][columns];
+        dp[0][0] = grid[0][0];
+        for (int i = 1; i < rows; i++) {
+            dp[i][0] = dp[i - 1][0] + grid[i][0];
+        }
+        for (int j = 1; j < columns; j++) {
+            dp[0][j] = dp[0][j - 1] + grid[0][j];
+        }
+        for (int i = 1; i < rows; i++) {
+            for (int j = 1; j < columns; j++) {
+                dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1]) + grid[i][j];
+            }
+        }
+        return dp[rows - 1][columns - 1];
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/minimum-path-sum/solution/zui-xiao-lu-jing-he-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+1 3 1
+1 5 1
+4 2 1
+
+class Solution {
+    static int[][] dirs = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
+    public int[][] updateMatrix(int[][] matrix) {
+        int m = matrix.length, n = matrix[0].length;
+        // 初始化动态规划的数组，所有的距离值都设置为一个很大的数
+        int[][] dist = new int[m][n];
+        for (int i = 0; i < m; ++i) {
+            Arrays.fill(dist[i], Integer.MAX_VALUE / 2);
+        }
+        // 如果 (i, j) 的元素为 0，那么距离为 0
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (matrix[i][j] == 0) {
+                    dist[i][j] = 0;
+                }
+            }
+        }
+        // 只有 水平向左移动 和 竖直向上移动，注意动态规划的计算顺序
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (i - 1 >= 0) {
+                    dist[i][j] = Math.min(dist[i][j], dist[i - 1][j] + 1);
+                }
+                if (j - 1 >= 0) {
+                    dist[i][j] = Math.min(dist[i][j], dist[i][j - 1] + 1);
+                }
+            }
+        }
+        // 只有 水平向右移动 和 竖直向下移动，注意动态规划的计算顺序
+        for (int i = m - 1; i >= 0; --i) {
+            for (int j = n - 1; j >= 0; --j) {
+                if (i + 1 < m) {
+                    dist[i][j] = Math.min(dist[i][j], dist[i + 1][j] + 1);
+                }
+                if (j + 1 < n) {
+                    dist[i][j] = Math.min(dist[i][j], dist[i][j + 1] + 1);
+                }
+            }
+        }
+        return dist;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/01-matrix/solution/01ju-zhen-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public int maximalSquare(char[][] matrix) {
+        int maxSide = 0;
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+            return maxSide;
+        }
+        int rows = matrix.length, columns = matrix[0].length;
+        int[][] dp = new int[rows][columns];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                if (matrix[i][j] == '1') {
+                    if (i == 0 || j == 0) {
+                        dp[i][j] = 1;
+                    } else {
+                        dp[i][j] = Math.min(Math.min(dp[i - 1][j], dp[i][j - 1]), dp[i - 1][j - 1]) + 1;
+                    }
+                    maxSide = Math.max(maxSide, dp[i][j]);
+                }
+            }
+        }
+        int maxSquare = maxSide * maxSide;
+        return maxSquare;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/maximal-square/solution/zui-da-zheng-fang-xing-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+1 0 1 1 1
+0 1 1 1 1
+0 0 1 1 1
+class Solution {
+    public int numSquares(int n) {
+        int[] f = new int[n + 1];
+        for (int i = 1; i <= n; i++) {
+            int minn = Integer.MAX_VALUE;
+            for (int j = 1; j * j <= i; j++) {
+                minn = Math.min(minn, f[i - j * j]);
+            }
+            f[i] = minn + 1;
+        }
+        return f[n];
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/perfect-squares/solution/wan-quan-ping-fang-shu-by-leetcode-solut-t99c/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+class Solution {
+    public int numDecodings(String s) {
+        int n = s.length();
+        // a = f[i-2], b = f[i-1], c=f[i]
+        int a = 0, b = 1, c = 0;
+        for (int i = 1; i <= n; ++i) {
+            c = 0;
+            if (s.charAt(i - 1) != '0') {
+                c += b;
+            }
+            if (i > 1 && s.charAt(i - 2) != '0' && ((s.charAt(i - 2) - '0') * 10 + (s.charAt(i - 1) - '0') <= 26)) {
+                c += a;
+            }
+            a = b;
+            b = c;
+        }
+        return c;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/decode-ways/solution/jie-ma-fang-fa-by-leetcode-solution-p8np/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+public class Solution {
+    public boolean wordBreak(String s, List<String> wordDict) {
+        Set<String> wordDictSet = new HashSet(wordDict);
+        boolean[] dp = new boolean[s.length() + 1];
+        dp[0] = true;
+        for (int i = 1; i <= s.length(); i++) {
+            for (int j = 0; j < i; j++) {
+                if (dp[j] && wordDictSet.contains(s.substring(j, i))) {
+                    dp[i] = true;
+                    break;
+                }
+            }
+        }
+        return dp[s.length()];
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/word-break/solution/dan-ci-chai-fen-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public int lengthOfLIS(int[] nums) {
+        if (nums.length == 0) {
+            return 0;
+        }
+        int[] dp = new int[nums.length];
+        dp[0] = 1;
+        int maxans = 1;
+        for (int i = 1; i < nums.length; i++) {
+            dp[i] = 1;
+            for (int j = 0; j < i; j++) {
+                if (nums[i] > nums[j]) {
+                    dp[i] = Math.max(dp[i], dp[j] + 1);
+                }
+            }
+            maxans = Math.max(maxans, dp[i]);
+        }
+        return maxans;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/longest-increasing-subsequence/solution/zui-chang-shang-sheng-zi-xu-lie-by-leetcode-soluti/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public int longestCommonSubsequence(String text1, String text2) {
+        int m = text1.length(), n = text2.length();
+        int[][] dp = new int[m + 1][n + 1];
+        for (int i = 1; i <= m; i++) {
+            char c1 = text1.charAt(i - 1);
+            for (int j = 1; j <= n; j++) {
+                char c2 = text2.charAt(j - 1);
+                if (c1 == c2) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+        return dp[m][n];
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/longest-common-subsequence/solution/zui-chang-gong-gong-zi-xu-lie-by-leetcod-y7u0/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public boolean canPartition(int[] nums) {
+        int n = nums.length;
+        if (n < 2) {
+            return false;
+        }
+        int sum = 0, maxNum = 0;
+        for (int num : nums) {
+            sum += num;
+            maxNum = Math.max(maxNum, num);
+        }
+        if (sum % 2 != 0) {
+            return false;
+        }
+        int target = sum / 2;
+        if (maxNum > target) {
+            return false;
+        }
+        boolean[] dp = new boolean[target + 1];
+        dp[0] = true;
+        for (int i = 0; i < n; i++) {
+            int num = nums[i];
+            for (int j = target; j >= num; --j) {
+                dp[j] |= dp[j - num];
+            }
+        }
+        return dp[target];
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/partition-equal-subset-sum/solution/fen-ge-deng-he-zi-ji-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public int findMaxForm(String[] strs, int m, int n) {
+        int[][] dp = new int[m + 1][n + 1];
+        int length = strs.length;
+        for (int i = 0; i < length; i++) {
+            int[] zerosOnes = getZerosOnes(strs[i]);
+            int zeros = zerosOnes[0], ones = zerosOnes[1];
+            for (int j = m; j >= zeros; j--) {
+                for (int k = n; k >= ones; k--) {
+                    dp[j][k] = Math.max(dp[j][k], dp[j - zeros][k - ones] + 1);
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
+    public int[] getZerosOnes(String str) {
+        int[] zerosOnes = new int[2];
+        int length = str.length();
+        for (int i = 0; i < length; i++) {
+            zerosOnes[str.charAt(i) - '0']++;
+        }
+        return zerosOnes;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/ones-and-zeroes/solution/yi-he-ling-by-leetcode-solution-u2z2/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+public class Solution {
+    public int coinChange(int[] coins, int amount) {
+        int max = amount + 1;
+        int[] dp = new int[amount + 1];
+        Arrays.fill(dp, max);
+        dp[0] = 0;
+        for (int i = 1; i <= amount; i++) {
+            for (int j = 0; j < coins.length; j++) {
+                if (coins[j] <= i) {
+                    dp[i] = Math.min(dp[i], dp[i - coins[j]] + 1);
+                }
+            }
+        }
+        return dp[amount] > amount ? -1 : dp[amount];
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/coin-change/solution/322-ling-qian-dui-huan-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public int minDistance(String word1, String word2) {
+        int n = word1.length();
+        int m = word2.length();
+
+        // 有一个字符串为空串
+        if (n * m == 0) {
+            return n + m;
+        }
+
+        // DP 数组
+        int[][] D = new int[n + 1][m + 1];
+
+        // 边界状态初始化
+        for (int i = 0; i < n + 1; i++) {
+            D[i][0] = i;
+        }
+        for (int j = 0; j < m + 1; j++) {
+            D[0][j] = j;
+        }
+
+        // 计算所有 DP 值
+        for (int i = 1; i < n + 1; i++) {
+            for (int j = 1; j < m + 1; j++) {
+                int left = D[i - 1][j] + 1;
+                int down = D[i][j - 1] + 1;
+                int left_down = D[i - 1][j - 1];
+                if (word1.charAt(i - 1) != word2.charAt(j - 1)) {
+                    left_down += 1;
+                }
+                D[i][j] = Math.min(left, Math.min(down, left_down));
+            }
+        }
+        return D[n][m];
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/edit-distance/solution/bian-ji-ju-chi-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public int minSteps(int n) {
+        int[] f = new int[n + 1];
+        for (int i = 2; i <= n; ++i) {
+            f[i] = Integer.MAX_VALUE;
+            for (int j = 1; j * j <= i; ++j) {
+                if (i % j == 0) {
+                    f[i] = Math.min(f[i], f[j] + i / j);
+                    f[i] = Math.min(f[i], f[i / j] + j);
+                }
+            }
+        }
+        return f[n];
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/2-keys-keyboard/solution/zhi-you-liang-ge-jian-de-jian-pan-by-lee-ussa/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public boolean isMatch(String s, String p) {
+        int m = s.length();
+        int n = p.length();
+
+        boolean[][] f = new boolean[m + 1][n + 1];
+        f[0][0] = true;
+        for (int i = 0; i <= m; ++i) {
+            for (int j = 1; j <= n; ++j) {
+                if (p.charAt(j - 1) == '*') {
+                    f[i][j] = f[i][j - 2];
+                    if (matches(s, p, i, j - 1)) {
+                        f[i][j] = f[i][j] || f[i - 1][j];
+                    }
+                } else {
+                    if (matches(s, p, i, j)) {
+                        f[i][j] = f[i - 1][j - 1];
+                    }
+                }
+            }
+        }
+        return f[m][n];
+    }
+
+    public boolean matches(String s, String p, int i, int j) {
+        if (i == 0) {
+            return false;
+        }
+        if (p.charAt(j - 1) == '.') {
+            return true;
+        }
+        return s.charAt(i - 1) == p.charAt(j - 1);
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/regular-expression-matching/solution/zheng-ze-biao-da-shi-pi-pei-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+public class Solution {
+    public int maxProfit(int prices[]) {
+        int minprice = Integer.MAX_VALUE;
+        int maxprofit = 0;
+        for (int i = 0; i < prices.length; i++) {
+            if (prices[i] < minprice) {
+                minprice = prices[i];
+            } else if (prices[i] - minprice > maxprofit) {
+                maxprofit = prices[i] - minprice;
+            }
+        }
+        return maxprofit;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock/solution/121-mai-mai-gu-piao-de-zui-jia-shi-ji-by-leetcode-/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public int maxProfit(int k, int[] prices) {
+        if (prices.length == 0) {
+            return 0;
+        }
+
+        int n = prices.length;
+        k = Math.min(k, n / 2);
+        int[] buy = new int[k + 1];
+        int[] sell = new int[k + 1];
+
+        buy[0] = -prices[0];
+        sell[0] = 0;
+        for (int i = 1; i <= k; ++i) {
+            buy[i] = sell[i] = Integer.MIN_VALUE / 2;
+        }
+
+        for (int i = 1; i < n; ++i) {
+            buy[0] = Math.max(buy[0], sell[0] - prices[i]);
+            for (int j = 1; j <= k; ++j) {
+                buy[j] = Math.max(buy[j], sell[j] - prices[i]);
+                sell[j] = Math.max(sell[j], buy[j - 1] + prices[i]);   
+            }
+        }
+
+        return Arrays.stream(sell).max().getAsInt();
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iv/solution/mai-mai-gu-piao-de-zui-jia-shi-ji-iv-by-8xtkp/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+class Solution {
+    public int maxProfit(int[] prices) {
+        if (prices.length == 0) {
+            return 0;
+        }
+
+        int n = prices.length;
+        int f0 = -prices[0];
+        int f1 = 0;
+        int f2 = 0;
+        for (int i = 1; i < n; ++i) {
+            int newf0 = Math.max(f0, f2 - prices[i]);
+            int newf1 = f0 + prices[i];
+            int newf2 = Math.max(f1, f2);
+            f0 = newf0;
+            f1 = newf1;
+            f2 = newf2;
+        }
+
+        return Math.max(f1, f2);
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/solution/zui-jia-mai-mai-gu-piao-shi-ji-han-leng-dong-qi-4/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+class Solution {
+    public int maxProfit(int[] prices, int fee) {
+        int n = prices.length;
+        int sell = 0, buy = -prices[0];
+        for (int i = 1; i < n; ++i) {
+            sell = Math.max(sell, buy + prices[i] - fee);
+            buy = Math.max(buy, sell - prices[i]);
+        }
+        return sell;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/solution/mai-mai-gu-piao-de-zui-jia-shi-ji-han-sh-rzlz/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+class Solution {
+    public int countPrimes(int n) {
+        List<Integer> primes = new ArrayList<Integer>();
+        int[] isPrime = new int[n];
+        Arrays.fill(isPrime, 1);
+        for (int i = 2; i < n; ++i) {
+            if (isPrime[i] == 1) {
+                primes.add(i);
+            }
+            for (int j = 0; j < primes.size() && i * primes.get(j) < n; ++j) {
+                isPrime[i * primes.get(j)] = 0;
+                if (i % primes.get(j) == 0) {
+                    break;
+                }
+            }
+        }
+        return primes.size();
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/count-primes/solution/ji-shu-zhi-shu-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+public int trailingZeroes(int n) {
+    int zeroCount = 0;
+    long currentMultiple = 5;
+    while (n > 0) {
+        n /= 5;
+        zeroCount += n;
+    }
+    return zeroCount;
+}
+
+作者：LeetCode
+链接：https://leetcode-cn.com/problems/factorial-trailing-zeroes/solution/jie-cheng-hou-de-ling-by-leetcode/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+class Solution {
+    public String addStrings(String num1, String num2) {
+        int i = num1.length() - 1, j = num2.length() - 1, add = 0;
+        StringBuffer ans = new StringBuffer();
+        while (i >= 0 || j >= 0 || add != 0) {
+            int x = i >= 0 ? num1.charAt(i) - '0' : 0;
+            int y = j >= 0 ? num2.charAt(j) - '0' : 0;
+            int result = x + y + add;
+            ans.append(result % 10);
+            add = result / 10;
+            i--;
+            j--;
+        }
+        // 计算完以后的答案需要翻转过来
+        ans.reverse();
+        return ans.toString();
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/add-strings/solution/zi-fu-chuan-xiang-jia-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+class Solution {
+    public boolean isPowerOfThree(int n) {
+        return n > 0 && 1162261467 % n == 0;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/power-of-three/solution/3de-mi-by-leetcode-solution-hnap/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+Solution solution = new Solution([1, 3]);
+solution.pickIndex(); // 返回 1，返回下标 1，返回该下标概率为 3/4 。
+solution.pickIndex(); // 返回 1
+solution.pickIndex(); // 返回 1
+solution.pickIndex(); // 返回 1
+solution.pickIndex();
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/random-pick-with-weight
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+class Solution {
+    int[] pre;
+    int total;
+    
+    public Solution(int[] w) {
+        pre = new int[w.length];
+        pre[0] = w[0];
+        for (int i = 1; i < w.length; ++i) {
+            pre[i] = pre[i - 1] + w[i];
+        }
+        total = Arrays.stream(w).sum();
+    }
+    
+    public int pickIndex() {
+        int x = (int) (Math.random() * total) + 1;
+        return binarySearch(x);
+    }
+
+    private int binarySearch(int x) {
+        int low = 0, high = pre.length - 1;
+        while (low < high) {
+            int mid = (high - low) / 2 + low;
+            if (pre[mid] < x) {
+                low = mid + 1;
+            } else {
+                high = mid;
+            }
+        }
+        return low;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/random-pick-with-weight/solution/an-quan-zhong-sui-ji-xuan-ze-by-leetcode-h13t/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public int hammingDistance(int x, int y) {
+        int s = x ^ y, ret = 0;
+        while (s != 0) {
+            s &= s - 1;
+            ret++;
+        }
+        return ret;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/hamming-distance/solution/yi-ming-ju-chi-by-leetcode-solution-u1w7/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+public class Solution {
+    private static final int M1 = 0x55555555; // 01010101010101010101010101010101
+    private static final int M2 = 0x33333333; // 00110011001100110011001100110011
+    private static final int M4 = 0x0f0f0f0f; // 00001111000011110000111100001111
+    private static final int M8 = 0x00ff00ff; // 00000000111111110000000011111111
+
+    public int reverseBits(int n) {
+        n = n >>> 1 & M1 | (n & M1) << 1;
+        n = n >>> 2 & M2 | (n & M2) << 2;
+        n = n >>> 4 & M4 | (n & M4) << 4;
+        n = n >>> 8 & M8 | (n & M8) << 8;
+        return n >>> 16 | n << 16;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/reverse-bits/solution/dian-dao-er-jin-zhi-wei-by-leetcode-solu-yhxz/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public int singleNumber(int[] nums) {
+        int single = 0;
+        for (int num : nums) {
+            single ^= num;
+        }
+        return single;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/single-number/solution/zhi-chu-xian-yi-ci-de-shu-zi-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public boolean isPowerOfFour(int n) {
+        return n > 0 && (n & (n - 1)) == 0 && n % 3 == 1;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/power-of-four/solution/4de-mi-by-leetcode-solution-b3ya/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+  public int bitNumber(char ch){
+    return (int)ch - (int)'a';
+  }
+
+  public int maxProduct(String[] words) {
+    Map<Integer, Integer> hashmap = new HashMap();
+
+    int bitmask = 0, bitNum = 0;
+    for (String word : words) {
+      bitmask = 0;
+      for (char ch : word.toCharArray()) {
+        // add bit number bitNumber in bitmask
+        bitmask |= 1 << bitNumber(ch);
+      }
+      // there could be different words with the same bitmask
+      // ex. ab and aabb
+      hashmap.put(bitmask, Math.max(hashmap.getOrDefault(bitmask, 0), word.length()));
+    }
+
+    int maxProd = 0;
+    for (int x : hashmap.keySet())
+      for (int y : hashmap.keySet())
+        if ((x & y) == 0) maxProd = Math.max(maxProd, hashmap.get(x) * hashmap.get(y));
+
+    return maxProd;
+  }
+}
+
+作者：LeetCode
+链接：https://leetcode-cn.com/problems/maximum-product-of-word-lengths/solution/zui-da-dan-ci-chang-du-cheng-ji-by-leetcode/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public int[] countBits(int n) {
+        int[] bits = new int[n + 1];
+        for (int i = 1; i <= n; i++) {
+            bits[i] = bits[i & (i - 1)] + 1;
+        }
+        return bits;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/counting-bits/solution/bi-te-wei-ji-shu-by-leetcode-solution-0t1i/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public List<Integer> findDisappearedNumbers(int[] nums) {
+        int n = nums.length;
+        for (int num : nums) {
+            int x = (num - 1) % n;
+            nums[x] += n;
+        }
+        List<Integer> ret = new ArrayList<Integer>();
+        for (int i = 0; i < n; i++) {
+            if (nums[i] <= n) {
+                ret.add(i + 1);
+            }
+        }
+        return ret;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/find-all-numbers-disappeared-in-an-array/solution/zhao-dao-suo-you-shu-zu-zhong-xiao-shi-d-mabl/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public void rotate(int[][] matrix) {
+        int n = matrix.length;
+        // 水平翻转
+        for (int i = 0; i < n / 2; ++i) {
+            for (int j = 0; j < n; ++j) {
+                int temp = matrix[i][j];
+                matrix[i][j] = matrix[n - i - 1][j];
+                matrix[n - i - 1][j] = temp;
+            }
+        }
+        // 主对角线翻转
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < i; ++j) {
+                int temp = matrix[i][j];
+                matrix[i][j] = matrix[j][i];
+                matrix[j][i] = temp;
+            }
+        }
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/rotate-image/solution/xuan-zhuan-tu-xiang-by-leetcode-solution-vu3m/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public boolean searchMatrix(int[][] matrix, int target) {
+        // start our "pointer" in the bottom-left
+        int row = matrix.length-1;
+        int col = 0;
+
+        while (row >= 0 && col < matrix[0].length) {
+            if (matrix[row][col] > target) {
+                row--;
+            } else if (matrix[row][col] < target) {
+                col++;
+            } else { // found it
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
+
+作者：LeetCode
+链接：https://leetcode-cn.com/problems/search-a-2d-matrix-ii/solution/sou-suo-er-wei-ju-zhen-ii-by-leetcode-2/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public int maxChunksToSorted(int[] arr) {
+        int ans = 0, max = 0;
+        for (int i = 0; i < arr.length; ++i) {
+            max = Math.max(max, arr[i]);
+            if (max == i) ans++;
+        }
+        return ans;
+    }
+}
+
+作者：LeetCode
+链接：https://leetcode-cn.com/problems/max-chunks-to-make-sorted/solution/zui-duo-neng-wan-cheng-pai-xu-de-kuai-i-by-leetcod/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+MyQueue myQueue = new MyQueue();
+myQueue.push(1); // queue is: [1]
+myQueue.push(2); // queue is: [1, 2] (leftmost is front of the queue)
+myQueue.peek(); // return 1
+myQueue.pop(); // return 1, queue is [2]
+myQueue.empty(); // return false
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/implement-queue-using-stacks
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+private Stack<Integer> s1 = new Stack<>();
+private Stack<Integer> s2 = new Stack<>();
+
+// Push element x to the back of queue.
+public void push(int x) {
+    if (s1.empty())
+        front = x;
+    s1.push(x);
+}
+
+作者：LeetCode
+链接：https://leetcode-cn.com/problems/implement-queue-using-stacks/solution/yong-zhan-shi-xian-dui-lie-by-leetcode/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+// Removes the element from in front of queue.
+public void pop() {
+    if (s2.isEmpty()) {
+        while (!s1.isEmpty())
+            s2.push(s1.pop());
+    }
+    s2.pop();    
+}
+
+作者：LeetCode
+链接：https://leetcode-cn.com/problems/implement-queue-using-stacks/solution/yong-zhan-shi-xian-dui-lie-by-leetcode/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+// Get the front element.
+public int peek() {
+    if (!s2.isEmpty()) {
+        return s2.peek();
+    }
+    return front;
+}
+
+作者：LeetCode
+链接：https://leetcode-cn.com/problems/implement-queue-using-stacks/solution/yong-zhan-shi-xian-dui-lie-by-leetcode/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+// Return whether the queue is empty.
+public boolean empty() {
+    return s1.isEmpty() && s2.isEmpty();
+}
+
+作者：LeetCode
+链接：https://leetcode-cn.com/problems/implement-queue-using-stacks/solution/yong-zhan-shi-xian-dui-lie-by-leetcode/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+MinStack minStack = new MinStack();
+minStack.push(-2);
+minStack.push(0);
+minStack.push(-3);
+minStack.getMin();   --> 返回 -3.
+minStack.pop();
+minStack.top();      --> 返回 0.
+minStack.getMin();   --> 返回 -2.
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/min-stack
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+class MinStack {
+    Deque<Integer> xStack;
+    Deque<Integer> minStack;
+
+    public MinStack() {
+        xStack = new LinkedList<Integer>();
+        minStack = new LinkedList<Integer>();
+        minStack.push(Integer.MAX_VALUE);
+    }
+    
+    public void push(int x) {
+        xStack.push(x);
+        minStack.push(Math.min(minStack.peek(), x));
+    }
+    
+    public void pop() {
+        xStack.pop();
+        minStack.pop();
+    }
+    
+    public int top() {
+        return xStack.peek();
+    }
+    
+    public int getMin() {
+        return minStack.peek();
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/min-stack/solution/zui-xiao-zhan-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public boolean isValid(String s) {
+        int n = s.length();
+        if (n % 2 == 1) {
+            return false;
+        }
+
+        Map<Character, Character> pairs = new HashMap<Character, Character>() {{
+            put(')', '(');
+            put(']', '[');
+            put('}', '{');
+        }};
+        Deque<Character> stack = new LinkedList<Character>();
+        for (int i = 0; i < n; i++) {
+            char ch = s.charAt(i);
+            if (pairs.containsKey(ch)) {
+                if (stack.isEmpty() || stack.peek() != pairs.get(ch)) {
+                    return false;
+                }
+                stack.pop();
+            } else {
+                stack.push(ch);
+            }
+        }
+        return stack.isEmpty();
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/valid-parentheses/solution/you-xiao-de-gua-hao-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+class Solution {
+    public int[] dailyTemperatures(int[] temperatures) {
+        int length = temperatures.length;
+        int[] ans = new int[length];
+        Deque<Integer> stack = new LinkedList<Integer>();
+        for (int i = 0; i < length; i++) {
+            int temperature = temperatures[i];
+            while (!stack.isEmpty() && temperature > temperatures[stack.peek()]) {
+                int prevIndex = stack.pop();
+                ans[prevIndex] = i - prevIndex;
+            }
+            stack.push(i);
+        }
+        return ans;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/daily-temperatures/solution/mei-ri-wen-du-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public List<List<Integer>> getSkyline(int[][] buildings) {
+        PriorityQueue<int[]> pq = new PriorityQueue<int[]>((a, b) -> b[1] - a[1]);
+        List<Integer> boundaries = new ArrayList<Integer>();
+        for (int[] building : buildings) {
+            boundaries.add(building[0]);
+            boundaries.add(building[1]);
+        }
+        Collections.sort(boundaries);
+
+        List<List<Integer>> ret = new ArrayList<List<Integer>>();
+        int n = buildings.length, idx = 0;
+        for (int boundary : boundaries) {
+            while (idx < n && buildings[idx][0] <= boundary) {
+                pq.offer(new int[]{buildings[idx][1], buildings[idx][2]});
+                idx++;
+            }
+            while (!pq.isEmpty() && pq.peek()[0] <= boundary) {
+                pq.poll();
+            }
+
+            int maxn = pq.isEmpty() ? 0 : pq.peek()[1];
+            if (ret.size() == 0 || maxn != ret.get(ret.size() - 1).get(1)) {
+                ret.add(Arrays.asList(boundary, maxn));
+            }
+        }
+        return ret;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/the-skyline-problem/solution/tian-ji-xian-wen-ti-by-leetcode-solution-ozse/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+class Solution {
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        int n = nums.length;
+        Deque<Integer> deque = new LinkedList<Integer>();
+        for (int i = 0; i < k; ++i) {
+            while (!deque.isEmpty() && nums[i] >= nums[deque.peekLast()]) {
+                deque.pollLast();
+            }
+            deque.offerLast(i);
+        }
+
+        int[] ans = new int[n - k + 1];
+        ans[0] = nums[deque.peekFirst()];
+        for (int i = k; i < n; ++i) {
+            while (!deque.isEmpty() && nums[i] >= nums[deque.peekLast()]) {
+                deque.pollLast();
+            }
+            deque.offerLast(i);
+            while (deque.peekFirst() <= i - k) {
+                deque.pollFirst();
+            }
+            ans[i - k + 1] = nums[deque.peekFirst()];
+        }
+        return ans;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/sliding-window-maximum/solution/hua-dong-chuang-kou-zui-da-zhi-by-leetco-ki6m/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        Map<Integer, Integer> hashtable = new HashMap<Integer, Integer>();
+        for (int i = 0; i < nums.length; ++i) {
+            if (hashtable.containsKey(target - nums[i])) {
+                return new int[]{hashtable.get(target - nums[i]), i};
+            }
+            hashtable.put(nums[i], i);
+        }
+        return new int[0];
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/two-sum/solution/liang-shu-zhi-he-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public int longestConsecutive(int[] nums) {
+        Set<Integer> num_set = new HashSet<Integer>();
+        for (int num : nums) {
+            num_set.add(num);
+        }
+
+        int longestStreak = 0;
+
+        for (int num : num_set) {
+            if (!num_set.contains(num - 1)) {
+                int currentNum = num;
+                int currentStreak = 1;
+
+                while (num_set.contains(currentNum + 1)) {
+                    currentNum += 1;
+                    currentStreak += 1;
+                }
+
+                longestStreak = Math.max(longestStreak, currentStreak);
+            }
+        }
+
+        return longestStreak;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/longest-consecutive-sequence/solution/zui-chang-lian-xu-xu-lie-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public int maxPoints(int[][] points) {
+        int n = points.length;
+        if (n <= 2) {
+            return n;
+        }
+        int ret = 0;
+        for (int i = 0; i < n; i++) {
+            if (ret >= n - i || ret > n / 2) {
+                break;
+            }
+            Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+            for (int j = i + 1; j < n; j++) {
+                int x = points[i][0] - points[j][0];
+                int y = points[i][1] - points[j][1];
+                if (x == 0) {
+                    y = 1;
+                } else if (y == 0) {
+                    x = 1;
+                } else {
+                    if (y < 0) {
+                        x = -x;
+                        y = -y;
+                    }
+                    int gcdXY = gcd(Math.abs(x), Math.abs(y));
+                    x /= gcdXY;
+                    y /= gcdXY;
+                }
+                int key = y + x * 20001;
+                map.put(key, map.getOrDefault(key, 0) + 1);
+            }
+            int maxn = 0;
+            for (Map.Entry<Integer, Integer> entry: map.entrySet()) {
+                int num = entry.getValue();
+                maxn = Math.max(maxn, num + 1);
+            }
+            ret = Math.max(ret, maxn);
+        }
+        return ret;
+    }
+
+    public int gcd(int a, int b) {
+        return b != 0 ? gcd(b, a % b) : a;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/max-points-on-a-line/solution/zhi-xian-shang-zui-duo-de-dian-shu-by-le-tq8f/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    Map<String, PriorityQueue<String>> map = new HashMap<String, PriorityQueue<String>>();
+    List<String> itinerary = new LinkedList<String>();
+
+    public List<String> findItinerary(List<List<String>> tickets) {
+        for (List<String> ticket : tickets) {
+            String src = ticket.get(0), dst = ticket.get(1);
+            if (!map.containsKey(src)) {
+                map.put(src, new PriorityQueue<String>());
+            }
+            map.get(src).offer(dst);
+        }
+        dfs("JFK");
+        Collections.reverse(itinerary);
+        return itinerary;
+    }
+
+    public void dfs(String curr) {
+        while (map.containsKey(curr) && map.get(curr).size() > 0) {
+            String tmp = map.get(curr).poll();
+            dfs(tmp);
+        }
+        itinerary.add(curr);
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/reconstruct-itinerary/solution/zhong-xin-an-pai-xing-cheng-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+NumArray numArray = new NumArray([-2, 0, 3, -5, 2, -1]);
+numArray.sumRange(0, 2); // return 1 ((-2) + 0 + 3)
+numArray.sumRange(2, 5); // return -1 (3 + (-5) + 2 + (-1)) 
+numArray.sumRange(0, 5); // return -3 ((-2) + 0 + 3 + (-5) + 2 + (-1))
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/range-sum-query-immutable
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+class NumArray {
+    int[] sums;
+
+    public NumArray(int[] nums) {
+        int n = nums.length;
+        sums = new int[n + 1];
+        for (int i = 0; i < n; i++) {
+            sums[i + 1] = sums[i] + nums[i];
+        }
+    }
+    
+    public int sumRange(int i, int j) {
+        return sums[j + 1] - sums[i];
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/range-sum-query-immutable/solution/qu-yu-he-jian-suo-shu-zu-bu-ke-bian-by-l-px41/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+
+class NumMatrix {
+    int[][] sums;
+
+    public NumMatrix(int[][] matrix) {
+        int m = matrix.length;
+        if (m > 0) {
+            int n = matrix[0].length;
+            sums = new int[m + 1][n + 1];
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < n; j++) {
+                    sums[i + 1][j + 1] = sums[i][j + 1] + sums[i + 1][j] - sums[i][j] + matrix[i][j];
+                }
+            }
+        }
+    }
+    
+    public int sumRegion(int row1, int col1, int row2, int col2) {
+        return sums[row2 + 1][col2 + 1] - sums[row1][col2 + 1] - sums[row2 + 1][col1] + sums[row1][col1];
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/range-sum-query-2d-immutable/solution/er-wei-qu-yu-he-jian-suo-ju-zhen-bu-ke-b-2z5n/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+NumMatrix numMatrix = new NumMatrix([[3,0,1,4,2],[5,6,3,2,1],[1,2,0,1,5],[4,1,0,1,7],[1,0,3,0,5]]]);
+numMatrix.sumRegion(2, 1, 4, 3); // return 8 (红色矩形框的元素总和)
+numMatrix.sumRegion(1, 1, 2, 2); // return 11 (绿色矩形框的元素总和)
+numMatrix.sumRegion(1, 2, 2, 4); // return 12 (蓝色矩形框的元素总和)
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/range-sum-query-2d-immutable
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+public class Solution {
+    public int subarraySum(int[] nums, int k) {
+        int count = 0, pre = 0;
+        HashMap < Integer, Integer > mp = new HashMap < > ();
+        mp.put(0, 1);
+        for (int i = 0; i < nums.length; i++) {
+            pre += nums[i];
+            if (mp.containsKey(pre - k)) {
+                count += mp.get(pre - k);
+            }
+            mp.put(pre, mp.getOrDefault(pre, 0) + 1);
+        }
+        return count;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/subarray-sum-equals-k/solution/he-wei-kde-zi-shu-zu-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public boolean isAnagram(String s, String t) {
+        if (s.length() != t.length()) {
+            return false;
+        }
+        Map<Character, Integer> table = new HashMap<Character, Integer>();
+        for (int i = 0; i < s.length(); i++) {
+            char ch = s.charAt(i);
+            table.put(ch, table.getOrDefault(ch, 0) + 1);
+        }
+        for (int i = 0; i < t.length(); i++) {
+            char ch = t.charAt(i);
+            table.put(ch, table.getOrDefault(ch, 0) - 1);
+            if (table.get(ch) < 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/valid-anagram/solution/you-xiao-de-zi-mu-yi-wei-ci-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public boolean isIsomorphic(String s, String t) {
+        Map<Character, Character> s2t = new HashMap<Character, Character>();
+        Map<Character, Character> t2s = new HashMap<Character, Character>();
+        int len = s.length();
+        for (int i = 0; i < len; ++i) {
+            char x = s.charAt(i), y = t.charAt(i);
+            if ((s2t.containsKey(x) && s2t.get(x) != y) || (t2s.containsKey(y) && t2s.get(y) != x)) {
+                return false;
+            }
+            s2t.put(x, y);
+            t2s.put(y, x);
+        }
+        return true;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/isomorphic-strings/solution/tong-gou-zi-fu-chuan-by-leetcode-solutio-s6fd/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public int countSubstrings(String s) {
+        int n = s.length();
+        StringBuffer t = new StringBuffer("$#");
+        for (int i = 0; i < n; ++i) {
+            t.append(s.charAt(i));
+            t.append('#');
+        }
+        n = t.length();
+        t.append('!');
+
+        int[] f = new int[n];
+        int iMax = 0, rMax = 0, ans = 0;
+        for (int i = 1; i < n; ++i) {
+            // 初始化 f[i]
+            f[i] = i <= rMax ? Math.min(rMax - i + 1, f[2 * iMax - i]) : 1;
+            // 中心拓展
+            while (t.charAt(i + f[i]) == t.charAt(i - f[i])) {
+                ++f[i];
+            }
+            // 动态维护 iMax 和 rMax
+            if (i + f[i] - 1 > rMax) {
+                iMax = i;
+                rMax = i + f[i] - 1;
+            }
+            // 统计答案, 当前贡献为 (f[i] - 1) / 2 上取整
+            ans += f[i] / 2;
+        }
+
+        return ans;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/palindromic-substrings/solution/hui-wen-zi-chuan-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+class Solution {
+    public int countBinarySubstrings(String s) {
+        int ptr = 0, n = s.length(), last = 0, ans = 0;
+        while (ptr < n) {
+            char c = s.charAt(ptr);
+            int count = 0;
+            while (ptr < n && s.charAt(ptr) == c) {
+                ++ptr;
+                ++count;
+            }
+            ans += Math.min(count, last);
+            last = count;
+        }
+        return ans;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/count-binary-substrings/solution/ji-shu-er-jin-zhi-zi-chuan-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public int calculate(String s) {
+        Deque<Integer> stack = new LinkedList<Integer>();
+        char preSign = '+';
+        int num = 0;
+        int n = s.length();
+        for (int i = 0; i < n; ++i) {
+            if (Character.isDigit(s.charAt(i))) {
+                num = num * 10 + s.charAt(i) - '0';
+            }
+            if (!Character.isDigit(s.charAt(i)) && s.charAt(i) != ' ' || i == n - 1) {
+                switch (preSign) {
+                    case '+':
+                        stack.push(num);
+                        break;
+                    case '-':
+                        stack.push(-num);
+                        break;
+                    case '*':
+                        stack.push(stack.pop() * num);
+                        break;
+                    default:
+                        stack.push(stack.pop() / num);
+                }
+                preSign = s.charAt(i);
+                num = 0;
+            }
+        }
+        int ans = 0;
+        while (!stack.isEmpty()) {
+            ans += stack.pop();
+        }
+        return ans;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/basic-calculator-ii/solution/ji-ben-ji-suan-qi-ii-by-leetcode-solutio-cm28/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public int strStr(String haystack, String needle) {
+        int n = haystack.length(), m = needle.length();
+        if (m == 0) {
+            return 0;
+        }
+        int[] pi = new int[m];
+        for (int i = 1, j = 0; i < m; i++) {
+            while (j > 0 && needle.charAt(i) != needle.charAt(j)) {
+                j = pi[j - 1];
+            }
+            if (needle.charAt(i) == needle.charAt(j)) {
+                j++;
+            }
+            pi[i] = j;
+        }
+        for (int i = 0, j = 0; i < n; i++) {
+            while (j > 0 && haystack.charAt(i) != needle.charAt(j)) {
+                j = pi[j - 1];
+            }
+            if (haystack.charAt(i) == needle.charAt(j)) {
+                j++;
+            }
+            if (j == m) {
+                return i - m + 1;
+            }
+        }
+        return -1;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/implement-strstr/solution/shi-xian-strstr-by-leetcode-solution-ds6y/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+class Solution {
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        if (preorder == null || preorder.length == 0) {
+            return null;
+        }
+        TreeNode root = new TreeNode(preorder[0]);
+        Deque<TreeNode> stack = new LinkedList<TreeNode>();
+        stack.push(root);
+        int inorderIndex = 0;
+        for (int i = 1; i < preorder.length; i++) {
+            int preorderVal = preorder[i];
+            TreeNode node = stack.peek();
+            if (node.val != inorder[inorderIndex]) {
+                node.left = new TreeNode(preorderVal);
+                stack.push(node.left);
+            } else {
+                while (!stack.isEmpty() && stack.peek().val == inorder[inorderIndex]) {
+                    node = stack.pop();
+                    inorderIndex++;
+                }
+                node.right = new TreeNode(preorderVal);
+                stack.push(node.right);
+            }
+        }
+        return root;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/solution/cong-qian-xu-yu-zhong-xu-bian-li-xu-lie-gou-zao-9/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+
+    }
+}
+
+public class TreeNode {
+int val;
+TreeNode left;
+TreeNode right;
+TreeNode() {}
+TreeNode(int val) { this.val = val; }
+TreeNode(int val, TreeNode left, TreeNode right) {
+this.val = val;
+this.left = left;
+this.right = right;
+}
+}
+
+class Solution {
+    private static final int UNCOLORED = 0;
+    private static final int RED = 1;
+    private static final int GREEN = 2;
+    private int[] color;
+
+    public boolean isBipartite(int[][] graph) {
+        int n = graph.length;
+        color = new int[n];
+        Arrays.fill(color, UNCOLORED);
+        for (int i = 0; i < n; ++i) {
+            if (color[i] == UNCOLORED) {
+                Queue<Integer> queue = new LinkedList<Integer>();
+                queue.offer(i);
+                color[i] = RED;
+                while (!queue.isEmpty()) {
+                    int node = queue.poll();
+                    int cNei = color[node] == RED ? GREEN : RED;
+                    for (int neighbor : graph[node]) {
+                        if (color[neighbor] == UNCOLORED) {
+                            queue.offer(neighbor);
+                            color[neighbor] = cNei;
+                        } else if (color[neighbor] != cNei) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/is-graph-bipartite/solution/pan-duan-er-fen-tu-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+class Solution {
+    // 存储有向图
+    List<List<Integer>> edges;
+    // 存储每个节点的入度
+    int[] indeg;
+    // 存储答案
+    int[] result;
+    // 答案下标
+    int index;
+
+    public int[] findOrder(int numCourses, int[][] prerequisites) {
+        edges = new ArrayList<List<Integer>>();
+        for (int i = 0; i < numCourses; ++i) {
+            edges.add(new ArrayList<Integer>());
+        }
+        indeg = new int[numCourses];
+        result = new int[numCourses];
+        index = 0;
+        for (int[] info : prerequisites) {
+            edges.get(info[1]).add(info[0]);
+            ++indeg[info[0]];
+        }
+
+        Queue<Integer> queue = new LinkedList<Integer>();
+        // 将所有入度为 0 的节点放入队列中
+        for (int i = 0; i < numCourses; ++i) {
+            if (indeg[i] == 0) {
+                queue.offer(i);
+            }
+        }
+
+        while (!queue.isEmpty()) {
+            // 从队首取出一个节点
+            int u = queue.poll();
+            // 放入答案中
+            result[index++] = u;
+            for (int v: edges.get(u)) {
+                --indeg[v];
+                // 如果相邻节点 v 的入度为 0，就可以选 v 对应的课程了
+                if (indeg[v] == 0) {
+                    queue.offer(v);
+                }
+            }
+        }
+
+        if (index != numCourses) {
+            return new int[0];
+        }
+        return result;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/course-schedule-ii/solution/ke-cheng-biao-ii-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public int[] findRedundantConnection(int[][] edges) {
+        int n = edges.length;
+        int[] parent = new int[n + 1];
+        for (int i = 1; i <= n; i++) {
+            parent[i] = i;
+        }
+        for (int i = 0; i < n; i++) {
+            int[] edge = edges[i];
+            int node1 = edge[0], node2 = edge[1];
+            if (find(parent, node1) != find(parent, node2)) {
+                union(parent, node1, node2);
+            } else {
+                return edge;
+            }
+        }
+        return new int[0];
+    }
+
+    public void union(int[] parent, int index1, int index2) {
+        parent[find(parent, index1)] = find(parent, index2);
+    }
+
+    public int find(int[] parent, int index) {
+        if (parent[index] != index) {
+            parent[index] = find(parent, parent[index]);
+        }
+        return parent[index];
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/redundant-connection/solution/rong-yu-lian-jie-by-leetcode-solution-pks2/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+LRUCache lRUCache = new LRUCache(2);
+lRUCache.put(1, 1); // 缓存是 {1=1}
+lRUCache.put(2, 2); // 缓存是 {1=1, 2=2}
+lRUCache.get(1);    // 返回 1
+lRUCache.put(3, 3); // 该操作会使得关键字 2 作废，缓存是 {1=1, 3=3}
+lRUCache.get(2);    // 返回 -1 (未找到)
+lRUCache.put(4, 4); // 该操作会使得关键字 1 作废，缓存是 {4=4, 3=3}
+lRUCache.get(1);    // 返回 -1 (未找到)
+lRUCache.get(3);    // 返回 3
+lRUCache.get(4);    // 返回 4
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/lru-cache
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+public class LRUCache {
+    class DLinkedNode {
+        int key;
+        int value;
+        DLinkedNode prev;
+        DLinkedNode next;
+        public DLinkedNode() {}
+        public DLinkedNode(int _key, int _value) {key = _key; value = _value;}
+    }
+
+    private Map<Integer, DLinkedNode> cache = new HashMap<Integer, DLinkedNode>();
+    private int size;
+    private int capacity;
+    private DLinkedNode head, tail;
+
+    public LRUCache(int capacity) {
+        this.size = 0;
+        this.capacity = capacity;
+        // 使用伪头部和伪尾部节点
+        head = new DLinkedNode();
+        tail = new DLinkedNode();
+        head.next = tail;
+        tail.prev = head;
+    }
+
+    public int get(int key) {
+        DLinkedNode node = cache.get(key);
+        if (node == null) {
+            return -1;
+        }
+        // 如果 key 存在，先通过哈希表定位，再移到头部
+        moveToHead(node);
+        return node.value;
+    }
+
+    public void put(int key, int value) {
+        DLinkedNode node = cache.get(key);
+        if (node == null) {
+            // 如果 key 不存在，创建一个新的节点
+            DLinkedNode newNode = new DLinkedNode(key, value);
+            // 添加进哈希表
+            cache.put(key, newNode);
+            // 添加至双向链表的头部
+            addToHead(newNode);
+            ++size;
+            if (size > capacity) {
+                // 如果超出容量，删除双向链表的尾部节点
+                DLinkedNode tail = removeTail();
+                // 删除哈希表中对应的项
+                cache.remove(tail.key);
+                --size;
+            }
+        }
+        else {
+            // 如果 key 存在，先通过哈希表定位，再修改 value，并移到头部
+            node.value = value;
+            moveToHead(node);
+        }
+    }
+
+    private void addToHead(DLinkedNode node) {
+        node.prev = head;
+        node.next = head.next;
+        head.next.prev = node;
+        head.next = node;
+    }
+
+    private void removeNode(DLinkedNode node) {
+        node.prev.next = node.next;
+        node.next.prev = node.prev;
+    }
+
+    private void moveToHead(DLinkedNode node) {
+        removeNode(node);
+        addToHead(node);
+    }
+
+    private DLinkedNode removeTail() {
+        DLinkedNode res = tail.prev;
+        removeNode(res);
+        return res;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/lru-cache/solution/lruhuan-cun-ji-zhi-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        
+    }
+}
+
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode p = reverseList(head.next);
+        head.next.next = head;
+        head.next = null;
+        return p;
+    }
+}
+
+作者：LeetCode
+链接：https://leetcode-cn.com/problems/reverse-linked-list/solution/fan-zhuan-lian-biao-by-leetcode/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        ListNode prev = null;
+        ListNode curr = head;
+        while (curr != null) {
+            ListNode nextTemp = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = nextTemp;
+        }
+        return prev;
+    }
+}
+
+作者：LeetCode
+链接：https://leetcode-cn.com/problems/reverse-linked-list/solution/fan-zhuan-lian-biao-by-leetcode/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+class Solution {
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        ListNode prehead = new ListNode(-1);
+
+        ListNode prev = prehead;
+        while (l1 != null && l2 != null) {
+            if (l1.val <= l2.val) {
+                prev.next = l1;
+                l1 = l1.next;
+            } else {
+                prev.next = l2;
+                l2 = l2.next;
+            }
+            prev = prev.next;
+        }
+
+        // 合并后 l1 和 l2 最多只有一个还未被合并完，我们直接将链表末尾指向未合并完的链表即可
+        prev.next = l1 == null ? l2 : l1;
+
+        return prehead.next;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/merge-two-sorted-lists/solution/he-bing-liang-ge-you-xu-lian-biao-by-leetcode-solu/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public ListNode swapPairs(ListNode head) {
+        ListNode dummyHead = new ListNode(0);
+        dummyHead.next = head;
+        ListNode temp = dummyHead;
+        while (temp.next != null && temp.next.next != null) {
+            ListNode node1 = temp.next;
+            ListNode node2 = temp.next.next;
+            temp.next = node2;
+            node1.next = node2.next;
+            node2.next = node1;
+            temp = node1;
+        }
+        return dummyHead.next;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/swap-nodes-in-pairs/solution/liang-liang-jiao-huan-lian-biao-zhong-de-jie-di-91/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public boolean isPalindrome(ListNode head) {
+        if (head == null) {
+            return true;
+        }
+
+        // 找到前半部分链表的尾节点并反转后半部分链表
+        ListNode firstHalfEnd = endOfFirstHalf(head);
+        ListNode secondHalfStart = reverseList(firstHalfEnd.next);
+
+        // 判断是否回文
+        ListNode p1 = head;
+        ListNode p2 = secondHalfStart;
+        boolean result = true;
+        while (result && p2 != null) {
+            if (p1.val != p2.val) {
+                result = false;
+            }
+            p1 = p1.next;
+            p2 = p2.next;
+        }        
+
+        // 还原链表并返回结果
+        firstHalfEnd.next = reverseList(secondHalfStart);
+        return result;
+    }
+
+    private ListNode reverseList(ListNode head) {
+        ListNode prev = null;
+        ListNode curr = head;
+        while (curr != null) {
+            ListNode nextTemp = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = nextTemp;
+        }
+        return prev;
+    }
+
+    private ListNode endOfFirstHalf(ListNode head) {
+        ListNode fast = head;
+        ListNode slow = head;
+        while (fast.next != null && fast.next.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        return slow;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/palindrome-linked-list/solution/hui-wen-lian-biao-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+public class Solution {
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        if (headA == null || headB == null) {
+            return null;
+        }
+        ListNode pA = headA, pB = headB;
+        while (pA != pB) {
+            pA = pA == null ? headB : pA.next;
+            pB = pB == null ? headA : pB.next;
+        }
+        return pA;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/intersection-of-two-linked-lists/solution/xiang-jiao-lian-biao-by-leetcode-solutio-a8jn/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public boolean isBalanced(TreeNode root) {
+        return height(root) >= 0;
+    }
+
+    public int height(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int leftHeight = height(root.left);
+        int rightHeight = height(root.right);
+        if (leftHeight == -1 || rightHeight == -1 || Math.abs(leftHeight - rightHeight) > 1) {
+            return -1;
+        } else {
+            return Math.max(leftHeight, rightHeight) + 1;
+        }
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/balanced-binary-tree/solution/ping-heng-er-cha-shu-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+class Solution {
+    int ans;
+    public int diameterOfBinaryTree(TreeNode root) {
+        ans = 1;
+        depth(root);
+        return ans - 1;
+    }
+    public int depth(TreeNode node) {
+        if (node == null) {
+            return 0; // 访问到空节点了，返回0
+        }
+        int L = depth(node.left); // 左儿子为根的子树的深度
+        int R = depth(node.right); // 右儿子为根的子树的深度
+        ans = Math.max(ans, L+R+1); // 计算d_node即L+R+1 并更新ans
+        return Math.max(L, R) + 1; // 返回该节点为根的子树的深度
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/diameter-of-binary-tree/solution/er-cha-shu-de-zhi-jing-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public int pathSum(TreeNode root, int targetSum) {
+        HashMap<Long, Integer> prefix = new HashMap<>();
+        prefix.put(0L, 1);
+        return dfs(root, prefix, 0, targetSum);
+    }
+
+    public int dfs(TreeNode root, Map<Long, Integer> prefix, long curr, int targetSum) {
+        if (root == null) {
+            return 0;
+        }
+
+        int ret = 0;
+        curr += root.val;
+
+        ret = prefix.getOrDefault(curr - targetSum, 0);
+        prefix.put(curr, prefix.getOrDefault(curr, 0) + 1);
+        ret += dfs(root.left, prefix, curr, targetSum);
+        ret += dfs(root.right, prefix, curr, targetSum);
+        prefix.put(curr, prefix.getOrDefault(curr, 0) - 1);
+
+        return ret;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/path-sum-iii/solution/lu-jing-zong-he-iii-by-leetcode-solution-z9td/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public boolean isSymmetric(TreeNode root) {
+        return check(root, root);
+    }
+
+    public boolean check(TreeNode u, TreeNode v) {
+        Queue<TreeNode> q = new LinkedList<TreeNode>();
+        q.offer(u);
+        q.offer(v);
+        while (!q.isEmpty()) {
+            u = q.poll();
+            v = q.poll();
+            if (u == null && v == null) {
+                continue;
+            }
+            if ((u == null || v == null) || (u.val != v.val)) {
+                return false;
+            }
+
+            q.offer(u.left);
+            q.offer(v.right);
+
+            q.offer(u.right);
+            q.offer(v.left);
+        }
+        return true;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/symmetric-tree/solution/dui-cheng-er-cha-shu-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public List<Double> averageOfLevels(TreeNode root) {
+        List<Double> averages = new ArrayList<Double>();
+        Queue<TreeNode> queue = new LinkedList<TreeNode>();
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            double sum = 0;
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                TreeNode node = queue.poll();
+                sum += node.val;
+                TreeNode left = node.left, right = node.right;
+                if (left != null) {
+                    queue.offer(left);
+                }
+                if (right != null) {
+                    queue.offer(right);
+                }
+            }
+            averages.add(sum / size);
+        }
+        return averages;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/average-of-levels-in-binary-tree/solution/er-cha-shu-de-ceng-ping-jun-zhi-by-leetcode-soluti/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public List<Double> averageOfLevels(TreeNode root) {
+        List<Double> averages = new ArrayList<Double>();
+        Queue<TreeNode> queue = new LinkedList<TreeNode>();
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            double sum = 0;
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                TreeNode node = queue.poll();
+                sum += node.val;
+                TreeNode left = node.left, right = node.right;
+                if (left != null) {
+                    queue.offer(left);
+                }
+                if (right != null) {
+                    queue.offer(right);
+                }
+            }
+            averages.add(sum / size);
+        }
+        return averages;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/average-of-levels-in-binary-tree/solution/er-cha-shu-de-ceng-ping-jun-zhi-by-leetcode-soluti/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public List<Integer> preorderTraversal(TreeNode root) {
+        List<Integer> res = new ArrayList<Integer>();
+        if (root == null) {
+            return res;
+        }
+
+        TreeNode p1 = root, p2 = null;
+
+        while (p1 != null) {
+            p2 = p1.left;
+            if (p2 != null) {
+                while (p2.right != null && p2.right != p1) {
+                    p2 = p2.right;
+                }
+                if (p2.right == null) {
+                    res.add(p1.val);
+                    p2.right = p1;
+                    p1 = p1.left;
+                    continue;
+                } else {
+                    p2.right = null;
+                }
+            } else {
+                res.add(p1.val);
+            }
+            p1 = p1.right;
+        }
+        return res;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/binary-tree-preorder-traversal/solution/er-cha-shu-de-qian-xu-bian-li-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public void recoverTree(TreeNode root) {
+        TreeNode x = null, y = null, pred = null, predecessor = null;
+
+        while (root != null) {
+            if (root.left != null) {
+                // predecessor 节点就是当前 root 节点向左走一步，然后一直向右走至无法走为止
+                predecessor = root.left;
+                while (predecessor.right != null && predecessor.right != root) {
+                    predecessor = predecessor.right;
+                }
+                
+                // 让 predecessor 的右指针指向 root，继续遍历左子树
+                if (predecessor.right == null) {
+                    predecessor.right = root;
+                    root = root.left;
+                }
+                // 说明左子树已经访问完了，我们需要断开链接
+                else {
+                    if (pred != null && root.val < pred.val) {
+                        y = root;
+                        if (x == null) {
+                            x = pred;
+                        }
+                    }
+                    pred = root;
+
+                    predecessor.right = null;
+                    root = root.right;
+                }
+            }
+            // 如果没有左孩子，则直接访问右孩子
+            else {
+                if (pred != null && root.val < pred.val) {
+                    y = root;
+                    if (x == null) {
+                        x = pred;
+                    }
+                }
+                pred = root;
+                root = root.right;
+            }
+        }
+        swap(x, y);
+    }
+
+    public void swap(TreeNode x, TreeNode y) {
+        int tmp = x.val;
+        x.val = y.val;
+        y.val = tmp;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/recover-binary-search-tree/solution/hui-fu-er-cha-sou-suo-shu-by-leetcode-solution/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+    public TreeNode trimBST(TreeNode root, int L, int R) {
+        if (root == null) return root;
+        if (root.val > R) return trimBST(root.left, L, R);
+        if (root.val < L) return trimBST(root.right, L, R);
+
+        root.left = trimBST(root.left, L, R);
+        root.right = trimBST(root.right, L, R);
+        return root;
+    }
+}
+
+作者：LeetCode
+链接：https://leetcode-cn.com/problems/trim-a-binary-search-tree/solution/xiu-jian-er-cha-sou-suo-shu-by-leetcode/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+Trie trie = new Trie();
+trie.insert("apple");
+trie.search("apple");   // 返回 True
+trie.search("app");     // 返回 False
+trie.startsWith("app"); // 返回 True
+trie.insert("app");
+trie.search("app");     // 返回 True
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/implement-trie-prefix-tree
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+class Trie {
+    private Trie[] children;
+    private boolean isEnd;
+
+    public Trie() {
+        children = new Trie[26];
+        isEnd = false;
+    }
+    
+    public void insert(String word) {
+        Trie node = this;
+        for (int i = 0; i < word.length(); i++) {
+            char ch = word.charAt(i);
+            int index = ch - 'a';
+            if (node.children[index] == null) {
+                node.children[index] = new Trie();
+            }
+            node = node.children[index];
+        }
+        node.isEnd = true;
+    }
+    
+    public boolean search(String word) {
+        Trie node = searchPrefix(word);
+        return node != null && node.isEnd;
+    }
+    
+    public boolean startsWith(String prefix) {
+        return searchPrefix(prefix) != null;
+    }
+
+    private Trie searchPrefix(String prefix) {
+        Trie node = this;
+        for (int i = 0; i < prefix.length(); i++) {
+            char ch = prefix.charAt(i);
+            int index = ch - 'a';
+            if (node.children[index] == null) {
+                return null;
+            }
+            node = node.children[index];
+        }
+        return node;
+    }
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/implement-trie-prefix-tree/solution/shi-xian-trie-qian-zhui-shu-by-leetcode-ti500/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。

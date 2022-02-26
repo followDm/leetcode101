@@ -1,0 +1,595 @@
+```cpp
+// number of children:3
+// 1 2 3
+// number of cookies:2
+// 1 1
+// 1
+```
+
+我执行的输入输出
+
+```cpp
+/**
+ * 输入：numbers = [2,7,11,15], target = 9
+ * 输出：[1,2]
+ * 解释：2 与 7 之和等于目标数 9 。因此 index1 = 1, index2 = 2 。
+ */
+// 输入：c = 5
+// 输出：true
+// 解释：1 * 1 + 2 * 2 = 5
+```
+
+官方的说明
+
+```
+作者：LeetCode-Solution
+链接：https://leetcode-cn.com/problems/candy/solution/fen-fa-tang-guo-by-leetcode-solution-f01p/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+来自官网的官方解答、或者精选、或者我认为最好的代码，C++
+```
+
+方法选择的与书本上相同
+
+有的方法没有C++版本，我自己写的
+
+### java
+
+> 要不第11章跳过去？
+
+| 题目 | 问题                         | 同题型           |
+| ---- | ---------------------------- | ---------------- |
+| 142  | java二叉链表树，还不会创建   | 382;23           |
+| 215  | 快速选择算法不懂             |                  |
+| 417  | 无官方的解答；涉及知识       | 241;504;382;1110 |
+| 73   | java char array 控制面板输入 | 可能写错了       |
+| 384  | 需要另类输入，没有其他问题   | 528              |
+| 105  | **建树建表**                 | 206              |
+
+``` java
+    public static void main(String[] args) {
+        //两个字符串
+        LeetCode76 solution = new LeetCode76();
+        Scanner scanner = new Scanner(System.in);
+        
+        String n, m;
+        System.out.print("string m: ");
+        m = scanner.nextLine();
+        System.out.print("string n: ");
+        n = scanner.nextLine();
+        solution.minWindow(m, n);
+        scanner.close();
+    }
+    public static void main(String[] args) {
+        //一个整数
+        LeetCode70 solution = new LeetCode70();
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("size of stairs: ");
+        int n = scanner.nextInt();
+        
+        solution.climbStairs(n); 
+        scanner.close();
+    }
+    public static void main(String[] args) {
+        //二维整数数组
+        LeetCode64 solution = new LeetCode64();
+        Scanner scanner = new Scanner(System.in);
+        int [][] grid;
+        int rows = 0, columns = 0;
+        System.out.print("number of rows: ");
+        rows = scanner.nextInt();
+        System.out.print("number of columns:");
+        columns = scanner.nextInt();
+        grid = new int[rows][columns];
+        for (int i = 1; i <= rows; i++){
+            for (int j = 1; j <= columns; j++){
+                grid[i-1][j-1] = scanner.nextInt();
+            }
+        }
+        solution.minPathSum(grid);
+        scanner.close();
+    }
+    public static void main(String[] args) {
+        //一维整数数组
+        LeetCode46 solution = new LeetCode46();
+        Scanner scanner = new Scanner(System.in);
+        
+        int rows = 0, columns = 0;
+        System.out.print("number of nums: ");
+        rows = scanner.nextInt();
+        int [] grid = new int[rows];
+        for (int i = 1; i <= rows; i++){
+            grid[i-1] = scanner.nextInt();
+        }
+        solution.permute(grid);
+        scanner.close();
+    }
+    public static void main(String[] args) {
+        //两个一维整数数组
+        LeetCode88 solution = new LeetCode88();
+        Scanner scanner = new Scanner(System.in);
+        int[] numbers1, numbers2;
+        int n = 0, m = 0;
+        System.out.print("number of numbers1: ");
+        m = scanner.nextInt();
+        System.out.print("number of numbers2: ");
+        n = scanner.nextInt();
+
+        numbers1 = new int[m+n];
+        for (int i = 1; i <= m; i++){
+            numbers1[i-1] = scanner.nextInt();
+        }
+        numbers2 = new int[n];
+        for (int i = 1; i <= n; i++){
+            numbers2[i-1] = scanner.nextInt();
+        }
+        solution.merge(numbers1, m, numbers2, n);
+        scanner.close();
+    }
+    public static void main(String[] args) {
+        //二维字符数组
+        LeetCode79 solution = new LeetCode79();
+        Scanner scanner = new Scanner(System.in);
+        char [][] board;
+        int rows = 0, columns = 0;
+        System.out.print("number of rows: ");
+        rows = scanner.nextInt();
+        System.out.print("number of columns:");
+        columns = scanner.nextInt();
+        board = new char[rows][columns];
+        for (int i = 1; i <= rows; i++){
+            for (int j = 1; j <= columns; j++){
+                board[i-1][j-1] = scanner.next().charAt(0);
+            }
+        }
+        System.out.println("word: ");
+        String word = scanner.nextLine();
+        solution.exist(board, word);
+        scanner.close();
+    }
+```
+
+``` java
+package com.hy.demo;
+
+public class TestEnum {
+    enum chooses {DA, XIAO};
+
+    public static void main(String[] args) {
+        TestEnum testEnum = new TestEnum();
+        chooses c1 = chooses.valueOf("DA");
+        testEnum.stairsClimb(3, c1);
+    }
+
+    public void stairsClimb(int n, chooses c){
+        switch (c){
+            case DA:
+                System.out.println("DADADADADADADADA");
+                break;
+            case XIAO:
+                System.out.println("XIAO");
+                break;
+            default:
+                break;
+        }
+    }
+}
+```
+
+
+
+### 问题整理
+
+| 题目 | 问题                                  | 同题型  |
+| ---- | ------------------------------------- | ------- |
+| 934  | C++知识不足，新建类的构造方法怎么弄的 | 310;870 |
+| 470  | 随机数问题，不太懂；还是不没成功运行  |         |
+| 538  | 暂时看不懂                            |         |
+| 716  | 没做                                  | 146     |
+|      |                                       |         |
+|      |                                       |         |
+
+### 轮子
+
+| 轮子                 | 文件        |                      |
+| -------------------- | ----------- | -------------------- |
+| **循环链表**的创建   | leetcode142 | 链表入环的第一个节点 |
+| 开始去中间化         | leetcode23  |                      |
+| **二分**法查找       | leetcode34  |                      |
+| **位运算**处理       | leetcode51  | 八皇后               |
+| 用了**switch加枚举** | leetcode139 |                      |
+| 状态机什么回事       | leetcode309 |                      |
+| 随机数，结果auto     | leetcode239 | 不想自己输入了       |
+
+### 分类记录
+
+| 序号 | 内容                                                         |
+| ---- | ------------------------------------------------------------ |
+| 206  | 翻转链表                                                     |
+| 21   | 有序链表合并；不一样的后插链表；随机递增数字？               |
+| 24   | 节点交换                                                     |
+| 160  | 两个链表是否交于一点；有一种新的样子建立链表，无语了         |
+| 234  | 判断链表是否回文                                             |
+| 142  | 循环链表                                                     |
+| 83   | 删除有序链表中的值重复结点                                   |
+| 148  | 给链表排序；自底向上归并排序；修改了结构体，并尽量以后都是用这个；官网上也有，我算是结合了一下 |
+| 19   | 删除倒数第n个结点                                            |
+| 328  | 奇偶编号的结点分类                                           |
+
+> 
+
+| 序号 | 内容                                                         |
+| ---- | ------------------------------------------------------------ |
+| 104  | 二叉树的最大深度                                             |
+| 110  | 判断平衡二叉树                                               |
+| 105  | 递归那个似乎不能有重复值；但是迭代的可以;不应该涉及值来确定位置，最好通过遍历次序推断位置 |
+| 543  | 二叉树的直径                                                 |
+| 437  | 路径的和                                                     |
+| 101  | 判断二叉树是否对称；原来的代码根本不能用；我改成了105的迭代代码 |
+| 1110 | 二叉树删点成林                                               |
+| 637  | 二叉树每层节点值的平均数                                     |
+| 144  | 非递归来实现二叉树的前序遍历；把递归迭代和Morris都写进去了   |
+| 99   | 复原二叉查找树                                               |
+| 669  | 修剪二叉搜索树                                               |
+| 208  | 字典树                                                       |
+
+> 感觉太长了
+>
+> 99有一个非递归的，可以建对称树，其实也来自105，迭代方法。刘帅鹏你能不能认真一点
+
+
+| 序号 | 内容                                           |
+| ---- | ---------------------------------------------- |
+| 226  | 翻转二叉树                                     |
+| 617  | 合并二叉树；同一位置的值相加                   |
+| 572  | 另一个树的子树                                 |
+| 404  | 计算给定二叉树的所有左叶子之和。               |
+| 513  | 最底层最左边的叶子结点；没有官方代码；自创招式 |
+| 538  | 查找树改成累加树                               |
+| 235  | 二叉搜索树，公共祖先结点                       |
+| 530  | 二叉搜索树，不同结点值得最小值                 |
+| 889  | **先序和后序构造二叉树**                       |
+
+> 513可能是有一点点争议，比如最后一层就一个右叶子；极端的情况比如，只有右子树的二叉树，答案应该是根结点，或者不存在
+
+| 序号 | 内容                                  |
+| ---- | ------------------------------------- |
+| 106  | 中序后序遍历构造出二叉树              |
+| 145  | 返回二叉树的后序遍历                  |
+| 94   | 返回二叉树的中序遍历，栈实现          |
+| 236  | 普通二叉树的公共祖先                  |
+| 109  | 有序链表转二叉平衡树，搜索            |
+| 897  | 按中序遍历二叉搜索树转仅右子树的树    |
+| 653  | 二叉搜索树是否有值的和等于K的两个结点 |
+| 450  | 删除二叉搜索树的结点                  |
+
+### 待解决
+
+#### 142
+
+循环链表的创建部分
+
+搞定，**刘帅鹏你真是个天才**
+
+[382](https://leetcode-cn.com/problems/linked-list-random-node/)
+
+#### 4
+
+整个都懵了
+
+#### 934
+
+官方无C++代码
+
+#### 310
+
+官方无C++代码
+
+#### 257
+
+二叉树，同循环链表
+
+不是完全同循环链表，还有一点，是输入的时候不知道怎么区分左右子树，总不能-1表示子树空
+
+#### 37
+
+数独，输入运行没验证还
+
+#### 91
+
+[动态规划看不懂的呀](https://leetcode-cn.com/problems/decode-ways/solution/jie-ma-fang-fa-by-leetcode-solution-p8np/)
+
+动态规划我觉得最最最重要的是状态方程，其余代码注意怎么开始结束，剩下的交给机器就行了
+
+#### 384
+
+[洗牌可以，但是输入不怎么理解](https://leetcode-cn.com/problems/shuffle-an-array/solution/da-luan-shu-zu-by-leetcode/)
+
+#### 528
+
+[同上](https://leetcode-cn.com/problems/random-pick-with-weight/solution/an-quan-zhong-sui-ji-xuan-ze-by-leetcode/)
+
+#### 303
+
+同上
+
+#### 225
+
+[](https://leetcode-cn.com/problems/implement-stack-using-queues/)
+
+#### 470
+
+[这个好像比较特殊，rand7都是未知的](https://leetcode-cn.com/problems/implement-rand10-using-rand7/solution/yong-rand7-shi-xian-rand10-by-leetcode/)
+
+#### 318
+
+[Java转C++不好弄](https://leetcode-cn.com/problems/maximum-product-of-word-lengths/solution/zui-da-dan-ci-chang-du-cheng-ji-by-leetcode/)
+
+#### 232
+
+[用栈实现队列](https://leetcode-cn.com/problems/implement-queue-using-stacks/solution/yong-zhan-shi-xian-dui-lie-by-leetcode-s-xnb6/)实现的话，看官网给的例子也和**384**一样
+
+23也一样
+
+#### 155
+
+同上
+
+#### 307
+
+["NumArray", "sumRange", "update", "sumRange"]
+[[[1, 3, 5]], [0, 2], [1, 2], [0, 2]]
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/range-sum-query-mutable
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+#### 870
+
+没有C++版本，暂时没去改
+
+#### 772
+
+官网需要会员，别的地方不放心，算法到时候自己实现吧
+
+#### 206
+
+也许是后遗症，带头结点的链表还是有点疑问
+
+#### 160
+
+交叉链表这个怎么创建呢
+
+#### 437
+
+无官方解答；
+
+出现了结点值相同，原来的办法不行了
+
+解决不了，不能让根结点和它的左结点的值相等，不然区分不出来谁是根
+
+#### 1110
+
+无官方解答；
+
+#### 432
+
+> 也许432可以给其它不知道怎么输入的一个样例
+
+无官方解答；
+
+#### 513
+
+同上
+
+#### 105
+
+力扣建树了
+
+#### 208
+
+字典树，输入？
+
+#### 538
+
+暂时看不懂
+
+#### 785
+
+> static constexpr int RED = 1;
+>
+> 怀疑是这个的问题
+
+#### 1059
+
+会员专题
+
+#### 716
+
+会员
+
+#### 1135
+
+会员
+
+#### 882
+
+太深了
+
+#### 146
+
+不知道怎么输入
+
+
+
+### 放弃还是坚持
+
+觉得不要一口气干完了，其实我也干不完。决定改变一下，11章以后的，基本设计数据结构，那就慢慢做，当作复习的复习了。但是，今天干完第十章没问题吧。至于上慢一个个的为解决，也慢慢来。
+
+### 说明
+
+```cpp
+// 返回1/true输出true，返回0/false输出false
+cout << boolalpha << sol.judgeSquareSum(n);
+
+按照 LeetCode 的习惯，子序列（subsequence）不必连续，子数组（subarray）或子字符串（substring）必须连续
+    
+数组的子序列是一个由数组派生出来的序列，它可以通过删除一些元素或不删除元素、且不改变其余元素的顺序而得到
+```
+
+### 代码
+
+``` cpp
+#include<vector>
+#include<iostream>
+using namespace std;
+
+int main(){
+    string s;
+    cout << "string: ";
+    cin >> s;
+    
+    Solution sol;
+    cout << boolalpha << sol.validPalindrome(s);
+    return 0;
+}
+```
+
+```cpp
+#include<vector>
+#include<iostream>
+using namespace std;
+
+int main(){
+    vector<int> days;
+    int n = 0, t = 0;
+    cout << "number of days: ";
+    cin >> n;
+    for (int i = 1; i <= n; i++){
+        cin >> t;
+        days.push_back(t);
+    }
+    Solution sol;
+    cout << sol.maxProfit(days);
+    return 0;
+}
+```
+
+```cpp
+#include<vector>
+#include<iostream>
+using namespace std;
+
+int main(){
+    vector<int> nums;
+    int n = 0, t = 0, target;
+    cout << "number of nums: ";
+    cin >> n;
+    for (int i = 1; i <= n; i++){
+        cin >> t;
+        nums.push_back(t);
+    }
+    
+    cout << "target: ";
+    cin >> target;
+    Solution sol;
+    nums = sol.searchRange(nums, target);
+    n = nums.size();
+    cout << "[";
+    for (int i = 0; i < n - 1; i++){
+        cout << nums.at(i) << ",";
+    }
+    cout << nums.at(n - 1) << "]";
+    return 0;
+}
+```
+
+```cpp
+#include<vector>
+#include<iostream>
+using namespace std;
+
+int main(){
+    vector<vector<int>> grid;
+    vector<int> child;
+    int rows = 0, columns = 0, t = 0, n = 0;
+    cout << "number of rows: ";
+    cin >> rows;
+    cout << "number of columns: ";
+    cin >> columns;
+    for (int i = 1; i <= rows; i++){
+        for (int j = 1; j <= columns; j++){
+            cin >> t;
+            child.push_back(t);
+        }
+        grid.push_back(child);
+        child.clear();
+    }
+    Solution sol;
+    grid = sol.pacifiaAtlantic(grid);
+    n = grid.size();
+    cout << "[";
+    for (int i = 0; i < n - 1; i++){
+        cout << "[" << grid.at(i).at(0) << "," << grid.at(i).at(1) << "]";
+    }
+    cout << "[" << grid.at(n - 1).at(0) << "," << grid.at(n - 1).at(1) << "]" << "]";
+    return 0;
+}
+```
+
+```cpp
+#include<vector>
+#include<iostream>
+using namespace std;
+
+int main(){
+    vector<vector<int>> grid;
+    vector<int> child;
+    int rows = 0, t = 0, n = 0;
+    cout << "number of nums: ";
+    cin >> rows;
+    for (int i = 1; i <= rows; i++){
+        cin >> t;
+        child.push_back(t);
+    }
+    grid = permute(child);
+    n = grid.size();
+    cout << "[";
+    for (int i = 0; i < n; i++){
+        cout << "[";
+        for (int k = 0; k < rows - 1; k++){
+            cout << grid.at(i).at(k) << ",";
+        }
+        cout << grid.at(i).at(rows - 1) << "]";
+    }
+    cout << "]";
+    return 0;
+}
+```
+
+```cpp
+#include<vector>
+#include<iostream>
+using namespace std;
+
+int main(){
+    vector<string> dictionary;
+    string s;
+    int n;
+    string t;
+    cout << "string: ";
+    cin >> s;
+    cout << "size of dictionary: ";
+    cin >> n;
+    for (int i = 1; i <= n; i++){
+        cin >> t;
+        dictionary.push_back(t);
+    }
+    Solution sol;
+    cout << sol.findLongestWord(s, dictionary);
+    return 0;
+}
+```
+
